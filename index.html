@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JaFresh Produce — Fresh from the Farm. Right to Your Door.</title>
+  <meta name="description" content="JaFresh Produce connects you directly to Jamaican farmers. Subscribe to fresh weekly produce boxes delivered to your door. Supporting local agriculture, one box at a time." />
+  <meta name="keywords" content="Jamaica fresh produce, farm to door Jamaica, organic vegetables Jamaica, Jamaican farmers market, weekly produce box" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="JaFresh Produce" />
+  <meta property="og:description" content="Fresh from the Farm. Right to Your Door." />
+  <meta property="og:type" content="website" />
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Google Analytics placeholder -->
+  <script>window.dataLayer = window.dataLayer || [];</script>
+</head>
+<body>
+
+<!-- ══ MAIN SITE ══════════════════════════════════ -->
+<div id="main-site" class="main-site">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="#" class="navbar-logo" onclick="App.hideDashboard()">JaFresh <span>Produce</span></a>
+    <div class="navbar-links">
+      <a href="#products">Shop</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#farmers">Our Farmers</a>
+      <a href="#subscriptions">Subscribe</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="navbar-actions">
+      <button class="btn-nav-outline" id="btn-login">Log In</button>
+      <button class="btn-nav-solid" id="btn-register">Sign Up</button>
+      <button class="btn-nav-outline" id="btn-dashboard" style="display:none">Dashboard</button>
+      <button class="cart-icon" id="cart-btn" aria-label="Shopping Cart">
+        🛒 <span class="cart-count" id="cart-count" style="display:none">0</span>
+      </button>
+      <button class="hamburger" id="hamburger" onclick="document.querySelector('.navbar-links').style.display = document.querySelector('.navbar-links').style.display === 'flex' ? 'none' : 'flex'">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🇯🇲 Jamaica's #1 Farm-to-Door Platform</div>
+      <h1>Fresh from the <em>Farm.</em><br>Right to Your Door.</h1>
+      <p>We connect you directly with small Jamaican farmers — cutting out the middleman so you get fresher produce, farmers earn more, and your dollars support local communities.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+          🥬 Shop Fresh Produce
+        </button>
+        <button class="btn-secondary" onclick="document.getElementById('subscriptions').scrollIntoView({behavior:'smooth'})">
+          View Subscription Plans
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num" id="stat-farmers">0</div>
+          <div class="stat-label">Partner Farmers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="stat-customers">0</div>
+          <div class="stat-label">Happy Customers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="stat-parishes">0</div>
+          <div class="stat-label">Parishes Served</div>
+        </div>
+      </div>
+    </div>
+    <!-- decorative produce illustration -->
+    <div class="hero-image" aria-hidden="true" style="font-size:clamp(6rem,12vw,10rem);filter:drop-shadow(0 20px 40px rgba(0,0,0,0.3));line-height:1">
+      🥬🍅🥕<br>🌿🍊🥦<br>🍌🫑🧅
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="section-header">
+      <div class="section-label">Simple Process</div>
+      <h2 class="section-title">How <em>JaFresh Produce</em> Works</h2>
+      <p class="section-sub">From Jamaican soil to your table in just a few steps</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-icon">📦</div>
+        <h3>Choose Your Box</h3>
+        <p>Pick a subscription plan or individual produce boxes that match your family size and budget. New selections every week.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-icon">🌾</div>
+        <h3>Farmers Harvest Fresh</h3>
+        <p>Your order goes directly to our partner farmers. They harvest your produce fresh on the day of delivery — never sitting in a warehouse.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-icon">🚚</div>
+        <h3>We Pack & Deliver</h3>
+        <p>Our team packs your box at our Kingston hub and delivers island-wide. Kingston and St. Andrew deliveries within 24 hours.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-icon">🍽️</div>
+        <h3>Eat Fresh, Live Well</h3>
+        <p>Enjoy fresh Jamaican produce at your table knowing you supported a local farmer family with every purchase.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARCH & PRODUCTS -->
+  <section class="products-section" id="products">
+    <div class="section-header">
+      <div class="section-label">Fresh This Week</div>
+      <h2 class="section-title">Shop <em>Fresh Produce</em></h2>
+      <p class="section-sub">All sourced directly from verified Jamaican farms</p>
+    </div>
+    <div class="search-bar-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-bar" id="search-input" placeholder="Search produce, boxes, herbs…" />
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="App.filterProducts('all', this)">All</button>
+      <button class="filter-tab" onclick="App.filterProducts('boxes', this)">📦 Boxes</button>
+      <button class="filter-tab" onclick="App.filterProducts('vegetables', this)">🥦 Vegetables</button>
+      <button class="filter-tab" onclick="App.filterProducts('fruits', this)">🍊 Fruits</button>
+      <button class="filter-tab" onclick="App.filterProducts('herbs', this)">🌿 Herbs</button>
+      <button class="filter-tab" onclick="App.filterProducts('provisions', this)">🌽 Provisions</button>
+      <button class="filter-tab" onclick="App.filterProducts('gifts', this)">🎁 Gifts</button>
+    </div>
+    <div class="products-grid" id="products-grid"></div>
+  </section>
+
+  <!-- OUR FARMERS -->
+  <section class="farmers-section" id="farmers">
+    <div class="section-header">
+      <div class="section-label" style="color:var(--gold-light)">Meet the Growers</div>
+      <h2 class="section-title">Our <em>Partner Farmers</em></h2>
+      <p class="section-sub" style="color:rgba(255,255,255,0.6)">Real Jamaican farmers growing real food with love and care</p>
+    </div>
+    <div class="farmers-grid" id="farmers-grid"></div>
+    <div style="text-align:center;margin-top:2.5rem">
+      <button class="btn-secondary" onclick="App.openModal('register');App.switchRole('farmer')">
+        🌾 Join as a Farmer Partner
+      </button>
+    </div>
+  </section>
+
+  <!-- SUBSCRIPTION PLANS -->
+  <section class="subscription-section" id="subscriptions">
+    <div class="section-header">
+      <div class="section-label">Subscription Plans</div>
+      <h2 class="section-title">Pick Your <em>Plan</em></h2>
+      <p class="section-sub">Save more with a subscription. Pause or cancel anytime.</p>
+    </div>
+    <div class="plans-grid">
+      <div class="plan-card">
+        <div class="plan-icon">🌱</div>
+        <div class="plan-name">Seedling</div>
+        <div class="plan-desc">Perfect for singles or couples</div>
+        <div class="plan-price"><sup>J$</sup>1,500<sub>/week</sub></div>
+        <ul class="plan-features">
+          <li>Small Veggie Box (6–8 items)</li>
+          <li>Free island-wide delivery</li>
+          <li>Farmer story card included</li>
+          <li>Pause anytime</li>
+        </ul>
+        <button class="btn-plan" onclick="App.subscribePlan('Seedling Plan')">Get Started</button>
+      </div>
+      <div class="plan-card popular">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-icon">🌿</div>
+        <div class="plan-name">Harvest</div>
+        <div class="plan-desc">Best for families of 3–5</div>
+        <div class="plan-price"><sup>J$</sup>2,800<sub>/week</sub></div>
+        <ul class="plan-features">
+          <li>Large Veggie + Fruit Box</li>
+          <li>Free priority delivery</li>
+          <li>Farmer story card included</li>
+          <li>10% off add-on items</li>
+          <li>Recipe suggestions weekly</li>
+        </ul>
+        <button class="btn-plan" onclick="App.subscribePlan('Harvest Plan')">Get Started</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-icon">🌳</div>
+        <div class="plan-name">Abundance</div>
+        <div class="plan-desc">For large families or offices</div>
+        <div class="plan-price"><sup>J$</sup>4,500<sub>/week</sub></div>
+        <ul class="plan-features">
+          <li>XL Multi-Box Bundle (3 boxes)</li>
+          <li>Same-day delivery available</li>
+          <li>Dedicated farmer liaison</li>
+          <li>15% off all add-ons</li>
+          <li>Monthly farm visit invitation</li>
+          <li>Custom box requests</li>
+        </ul>
+        <button class="btn-plan" onclick="App.subscribePlan('Abundance Plan')">Get Started</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials-section" id="testimonials">
+    <div class="section-header">
+      <div class="section-label">Customer Love</div>
+      <h2 class="section-title">What <em>Jamaicans</em> Are Saying</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <div class="testimonial-text">"Since I started with JaFresh Produce, I haven't bought vegetables from the supermarket in 3 months. The callaloo and pumpkin are SO fresh — you can taste the difference immediately."</div>
+        <div class="testimonial-author">
+          <div class="author-avatar">👩🏾</div>
+          <div>
+            <div class="author-name">Keisha Thompson</div>
+            <div class="author-loc">📍 Kingston, St. Andrew</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <div class="testimonial-text">"As a chef, quality matters. JaFresh Produce has been a game-changer for my restaurant. The organic box is exceptional — my customers notice the difference in every dish."</div>
+        <div class="testimonial-author">
+          <div class="author-avatar">👨🏿</div>
+          <div>
+            <div class="author-name">Chef Marcus Reid</div>
+            <div class="author-loc">📍 New Kingston</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <div class="testimonial-text">"I love knowing exactly which farmer grew my food. Miss Hyacinth's herbs are unbelievable. This platform is doing something special for Jamaica — supporting our farmers while feeding us better."</div>
+        <div class="testimonial-author">
+          <div class="author-avatar">👩🏽</div>
+          <div>
+            <div class="author-name">Dr. Simone Clarke</div>
+            <div class="author-loc">📍 Portmore, St. Catherine</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT / CONTACT -->
+  <section id="contact" style="padding:6rem 5%;background:white;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;max-width:1100px;margin:0 auto;align-items:start">
+      <div>
+        <div class="section-label">Our Story</div>
+        <h2 class="section-title" style="margin-bottom:1rem">About <em>JaFresh Produce</em></h2>
+        <p style="color:var(--text-mid);line-height:1.8;margin-bottom:1rem">JaFresh Produce was founded by a group of UTech students who noticed a broken system: Jamaican supermarkets import produce from abroad while small local farmers struggled to sell their crops.</p>
+        <p style="color:var(--text-mid);line-height:1.8;margin-bottom:1rem">We built this platform to bridge that gap — connecting farm families directly with households and restaurants across Jamaica. Every purchase puts more money in a Jamaican farmer's pocket and fresher food on your table.</p>
+        <p style="color:var(--text-mid);line-height:1.8">Registered in Kingston, Jamaica. Proudly Jamaican 🇯🇲</p>
+      </div>
+      <div>
+        <div class="section-label">Get In Touch</div>
+        <h2 class="section-title" style="margin-bottom:1.5rem">Contact <em>Us</em></h2>
+        <form onsubmit="event.preventDefault();App.showToast('✅ Message sent! We\'ll reply within 24 hours.');" style="display:flex;flex-direction:column;gap:1rem">
+          <div class="form-group">
+            <label class="form-label">Your Name</label>
+            <input type="text" class="form-input" placeholder="e.g. Keisha Brown" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" placeholder="email@example.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-input" rows="4" placeholder="How can we help you?" required style="resize:vertical"></textarea>
+          </div>
+          <button type="submit" class="btn-submit" style="width:auto;padding:0.9rem 2rem;border-radius:50px">Send Message 📨</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">JaFresh <span>Produce</span></div>
+        <div class="footer-desc">Fresh Jamaican produce delivered directly from farmer to your door. Supporting local agriculture, one box at a time.</div>
+        <div class="footer-social">
+          <button class="social-btn" onclick="App.showToast('Follow us @JaFreshJA')">📘</button>
+          <button class="social-btn" onclick="App.showToast('Follow us @JaFreshJA')">📸</button>
+          <button class="social-btn" onclick="App.showToast('Follow us @JaFreshJA')">🎵</button>
+          <button class="social-btn" onclick="App.showToast('WhatsApp: +1-876-555-0000')">💬</button>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="#products">All Products</a></li>
+          <li><a href="#subscriptions">Subscription Plans</a></li>
+          <li><a href="#" onclick="App.filterProducts('boxes',document.querySelector('.filter-tab'));return false">Produce Boxes</a></li>
+          <li><a href="#" onclick="App.showToast('Gift cards coming soon!')">Gift Cards</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#contact">About Us</a></li>
+          <li><a href="#farmers">Our Farmers</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#" onclick="App.openModal('register');App.switchRole('farmer');return false">Become a Farmer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="pages/privacy.html">Privacy Policy</a></li>
+          <li><a href="pages/terms.html">Terms of Service</a></li>
+          <li><a href="pages/returns.html">Return Policy</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 JaFresh Produce. All rights reserved. Kingston, Jamaica 🇯🇲</span>
+      <span>Made with 💚 by UTech Students</span>
+    </div>
+  </footer>
+
+</div><!-- end main-site -->
+
+<!-- ══ CUSTOMER DASHBOARD ══════════════════════════ -->
+<div id="dashboard-customer" style="display:none">
+  <div class="dashboard-header">
+    <div>
+      <h1>🛒 My Dashboard</h1>
+      <p id="cust-email">customer@email.com</p>
+    </div>
+    <div style="display:flex;gap:1rem;align-items:center">
+      <span style="color:white;font-weight:600" id="cust-name">Customer Name</span>
+      <button class="btn-logout" onclick="App.handleLogout()">Log Out</button>
+      <button class="btn-logout" onclick="App.hideDashboard()" style="background:rgba(201,168,76,0.2);border-color:var(--gold);color:var(--gold)">← Back to Shop</button>
+    </div>
+  </div>
+  <div class="dashboard-body">
+    <div class="dashboard-grid">
+      <div class="dash-card">
+        <div class="dash-card-icon">📦</div>
+        <div class="dash-card-label">Total Orders</div>
+        <div class="dash-card-value" id="cust-orders-count">0</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-icon">💰</div>
+        <div class="dash-card-label">Total Spent</div>
+        <div class="dash-card-value" id="cust-total-spent">J$0</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-icon">🌿</div>
+        <div class="dash-card-label">Active Subscription</div>
+        <div class="dash-card-value" style="font-size:1.1rem">Harvest Plan</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-icon">🚚</div>
+        <div class="dash-card-label">Next Delivery</div>
+        <div class="dash-card-value" style="font-size:1.1rem">This Friday</div>
+      </div>
+    </div>
+    <div class="dash-section-title">Order History</div>
+    <table class="dash-table">
+      <thead>
+        <tr>
+          <th>Order ID</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="orders-tbody"></tbody>
+    </table>
+    <div style="margin-top:2rem">
+      <div class="dash-section-title">My Profile</div>
+      <div class="dash-card" style="max-width:500px">
+        <div class="form-group"><label class="form-label">Delivery Address</label><input class="form-input" placeholder="Enter your address" /></div>
+        <div class="form-group"><label class="form-label">Parish</label>
+          <select class="form-input">
+            <option>Kingston</option><option>St. Andrew</option><option>St. Catherine</option>
+            <option>St. James</option><option>Manchester</option><option>Clarendon</option>
+            <option>St. Elizabeth</option><option>Westmoreland</option><option>Hanover</option>
+            <option>St. Ann</option><option>St. Mary</option><option>Portland</option>
+            <option>St. Thomas</option><option>Trelawny</option>
+          </select>
+        </div>
+        <button class="btn-submit" style="width:auto;padding:0.7rem 1.5rem;border-radius:50px;margin-top:0.5rem" onclick="App.showToast('✅ Profile updated!')">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FARMER DASHBOARD ════════════════════════════ -->
+<div id="dashboard-farmer" style="display:none">
+  <div class="dashboard-header">
+    <div>
+      <h1>🌾 Farmer Dashboard</h1>
+      <p id="farmer-parish">St. Elizabeth</p>
+    </div>
+    <div style="display:flex;gap:1rem;align-items:center">
+      <span style="color:white;font-weight:600" id="farmer-name">Farmer Name</span>
+      <button class="btn-logout" onclick="App.handleLogout()">Log Out</button>
+      <button class="btn-logout" onclick="App.hideDashboard()" style="background:rgba(201,168,76,0.2);border-color:var(--gold);color:var(--gold)">← Back to Site</button>
+    </div>
+  </div>
+  <div class="dashboard-body">
+    <div class="dashboard-grid">
+      <div class="dash-card">
+        <div class="dash-card-icon">🌱</div>
+        <div class="dash-card-label">Active Listings</div>
+        <div class="dash-card-value" id="farmer-listings-count">0</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-icon">💵</div>
+        <div class="dash-card-label">This Month's Earnings</div>
+        <div class="dash-card-value" id="farmer-earnings">J$0</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-icon">📦</div>
+        <div class="dash-card-label">Orders This Week</div>
+        <div class="dash-card-value">12</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-icon">⭐</div>
+        <div class="dash-card-label">Rating</div>
+        <div class="dash-card-value">4.9</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <div class="dash-section-title">My Produce Listings</div>
+      <button class="btn-primary" style="padding:0.6rem 1.2rem;font-size:0.9rem" onclick="App.showAddListingModal()">+ Add New Listing</button>
+    </div>
+    <div id="farmer-listings"></div>
+
+    <div style="margin-top:2.5rem">
+      <div class="dash-section-title">Incoming Orders</div>
+      <table class="dash-table">
+        <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>GP-2026-441</strong></td><td>Keisha T.</td><td>Herb Bundle x2</td><td>J$1,600</td><td><span class="status-badge status-processing">Processing</span></td></tr>
+          <tr><td><strong>GP-2026-438</strong></td><td>Marcus R.</td><td>Weekly Veggie Box</td><td>J$1,500</td><td><span class="status-badge status-delivered">Delivered</span></td></tr>
+          <tr><td><strong>GP-2026-435</strong></td><td>Simone C.</td><td>Callaloo Bundle</td><td>J$700</td><td><span class="status-badge status-delivered">Delivered</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODALS ═══════════════════════════════════════ -->
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="App.closeModal('auth-modal')">✕</button>
+    <div class="modal-logo">JaFresh <span>Produce</span></div>
+    <div class="modal-subtitle">Jamaica's fresh produce marketplace</div>
+
+    <!-- Role Selector -->
+    <div class="role-tabs">
+      <button class="role-tab active" data-role="customer">
+        <span>🛒</span> I'm a Customer
+      </button>
+      <button class="role-tab" data-role="farmer">
+        <span>🌾</span> I'm a Farmer
+      </button>
+    </div>
+
+    <!-- Login / Register tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Log In</button>
+      <button class="auth-tab" data-tab="register">Create Account</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form id="login-form">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="login-email" placeholder="your@email.com" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="login-password" placeholder="Your password" required />
+      </div>
+      <button type="submit" class="btn-submit">Log In →</button>
+      <div class="form-footer">
+        Don't have an account? <a class="form-link" onclick="App.switchAuthTab('register')">Sign up free</a>
+      </div>
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form id="register-form" style="display:none">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name *</label>
+          <input type="text" class="form-input" id="reg-firstname" placeholder="Keisha" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name *</label>
+          <input type="text" class="form-input" id="reg-lastname" placeholder="Brown" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address *</label>
+        <input type="email" class="form-input" id="reg-email" placeholder="your@email.com" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input type="tel" class="form-input" id="reg-phone" placeholder="+1-876-555-0000" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password *</label>
+        <input type="password" class="form-input" id="reg-password" placeholder="Create a password" required />
+      </div>
+      <!-- Farmer-only fields -->
+      <div id="farmer-extra-fields" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Parish (where your farm is located)</label>
+          <select class="form-input" id="reg-parish">
+            <option value="">Select Parish</option>
+            <option>Kingston</option><option>St. Andrew</option><option>St. Catherine</option>
+            <option>St. James</option><option>Manchester</option><option>Clarendon</option>
+            <option>St. Elizabeth</option><option>Westmoreland</option><option>Hanover</option>
+            <option>St. Ann</option><option>St. Mary</option><option>Portland</option>
+            <option>St. Thomas</option><option>Trelawny</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tell us about your farm</label>
+          <textarea class="form-input" id="reg-bio" rows="2" placeholder="What do you grow? How long have you been farming?"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn-submit">Create Account 🌿</button>
+      <div class="form-footer">
+        Already have an account? <a class="form-link" onclick="App.switchAuthTab('login')">Log in</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkout-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="App.closeModal('checkout-modal')">✕</button>
+    <div class="modal-logo" style="margin-bottom:1.5rem">Checkout 🛒</div>
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input type="text" class="form-input" id="checkout-name" placeholder="Your full name" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="checkout-email" placeholder="email@example.com" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Delivery Address</label>
+      <input type="text" class="form-input" id="checkout-address" placeholder="Street address" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Parish</label>
+        <select class="form-input" id="checkout-parish">
+          <option value="">Select</option>
+          <option>Kingston</option><option>St. Andrew</option><option>St. Catherine</option>
+          <option>St. James</option><option>Manchester</option><option>Clarendon</option>
+          <option>St. Elizabeth</option><option>Westmoreland</option><option>Hanover</option>
+          <option>St. Ann</option><option>St. Mary</option><option>Portland</option>
+          <option>St. Thomas</option><option>Trelawny</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input type="tel" class="form-input" id="checkout-phone" placeholder="+1-876-…" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Payment (Test Mode)</label>
+      <input class="form-input" value="4242 4242 4242 4242" readonly style="color:var(--text-light)" />
+      <small style="color:var(--text-light);font-size:0.75rem">Stripe test card — no real payment processed</small>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1.1rem;margin:1rem 0;padding:1rem;background:var(--green-pale);border-radius:var(--radius-sm)">
+      <span>Total:</span><span id="checkout-total" style="color:var(--green-mid)">J$0</span>
+    </div>
+    <button class="btn-submit" id="btn-place-order">Place Order 🌿</button>
+  </div>
+</div>
+
+<!-- ORDER SUCCESS MODAL -->
+<div class="modal-overlay" id="order-success-modal">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
+    <div class="modal-logo">Order Placed!</div>
+    <p style="color:var(--text-mid);margin:0.8rem 0 0.3rem">Your order ID:</p>
+    <div style="font-size:1.4rem;font-weight:800;color:var(--green-mid);margin-bottom:1rem" id="order-id-display">GP-001</div>
+    <p style="color:var(--text-mid);font-size:0.88rem;line-height:1.6">Our farmers will harvest your produce fresh and it will be delivered within 24–48 hours. You'll receive a WhatsApp confirmation shortly.</p>
+    <button class="btn-submit" id="btn-order-done" style="margin-top:1.5rem">Continue Shopping 🥬</button>
+  </div>
+</div>
+
+<!-- ADD LISTING MODAL (Farmer) -->
+<div class="modal-overlay" id="add-listing-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="App.closeModal('add-listing-modal')">✕</button>
+    <div class="modal-logo" style="margin-bottom:1.5rem">Add New Listing 🌾</div>
+    <form id="add-listing-form">
+      <div class="form-group">
+        <label class="form-label">Produce Name *</label>
+        <input type="text" class="form-input" id="listing-name" placeholder="e.g. Fresh Callaloo Bunch" required />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Emoji Icon</label>
+          <input type="text" class="form-input" id="listing-emoji" placeholder="🌿" maxlength="2" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Unit</label>
+          <input type="text" class="form-input" id="listing-unit" placeholder="e.g. bunch, kg, pack" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Price (J$) *</label>
+          <input type="number" class="form-input" id="listing-price" placeholder="350" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Stock Available *</label>
+          <input type="number" class="form-input" id="listing-stock" placeholder="50" required />
+        </div>
+      </div>
+      <button type="submit" class="btn-submit">Add Listing ✅</button>
+    </form>
+  </div>
+</div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header">
+    <div class="cart-title">🛒 Your Cart</div>
+    <button class="cart-close" onclick="App.closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty">
+      <div class="cart-empty-icon">🛒</div>
+      <p>Your cart is empty</p>
+    </div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cart-total-amount">J$0</span>
+    </div>
+    <button class="btn-checkout" id="btn-checkout">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- SCRIPTS -->
+<script src="js/db.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
