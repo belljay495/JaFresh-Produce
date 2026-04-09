@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — JaFresh Produce</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body { background: var(--cream); }
+
+    /* TOP BAR */
+    .dash-navbar {
+      position: sticky; top: 0; z-index: 1000;
+      background: rgba(26,58,42,0.97); backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 70px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    }
+    .dash-navbar-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--gold); }
+    .dash-navbar-logo span { color: var(--green-light); }
+    .dash-navbar-right { display: flex; align-items: center; gap: 1rem; }
+    .user-chip {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.1); border-radius: 50px;
+      padding: 0.4rem 1rem; color: white; font-size: 0.88rem;
+    }
+    .user-chip-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--green-mid); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+    .btn-sm { padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.82rem; font-weight: 600; border: none; cursor: pointer; }
+    .btn-sm-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.3); color: white; }
+    .btn-sm-gold { background: var(--gold); color: var(--green-dark); }
+    .cart-btn-nav { position: relative; background: rgba(255,255,255,0.1); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+    .cart-badge { position: absolute; top: -4px; right: -4px; background: var(--gold); color: var(--green-dark); font-size: 0.6rem; font-weight: 800; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* LAYOUT */
+    .dash-layout { display: grid; grid-template-columns: 240px 1fr; min-height: calc(100vh - 70px); }
+
+    /* SIDEBAR */
+    .dash-sidebar {
+      background: white; border-right: 1px solid var(--green-pale);
+      padding: 2rem 0; position: sticky; top: 70px; height: calc(100vh - 70px); overflow-y: auto;
+    }
+    .sidebar-section { margin-bottom: 2rem; }
+    .sidebar-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-light); padding: 0 1.5rem; margin-bottom: 0.5rem; }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.7rem 1.5rem; color: var(--text-mid); font-size: 0.9rem; font-weight: 500;
+      transition: all 0.15s; cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+    }
+    .sidebar-link:hover { background: var(--green-pale); color: var(--green-dark); }
+    .sidebar-link.active { background: var(--green-pale); color: var(--green-dark); font-weight: 700; border-right: 3px solid var(--green-mid); }
+    .sidebar-link-icon { font-size: 1.1rem; }
+
+    /* MAIN */
+    .dash-main { padding: 2rem 2.5rem; }
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    .page-header { margin-bottom: 1.5rem; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 800; color: var(--green-dark); }
+    .page-subtitle { color: var(--text-light); font-size: 0.9rem; margin-top: 0.3rem; }
+
+    /* SEARCH + FILTERS */
+    .shop-controls { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .search-wrap { position: relative; flex: 1; min-width: 220px; }
+    .search-icon-inner { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light); }
+    .search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.8rem; border: 1.5px solid var(--green-pale); border-radius: 50px; font-size: 0.92rem; font-family: inherit; outline: none; background: white; }
+    .search-input:focus { border-color: var(--green-mid); }
+    .filter-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .filter-tab { padding: 0.45rem 1rem; border-radius: 50px; border: 1.5px solid var(--green-mid); background: transparent; color: var(--green-mid); font-size: 0.82rem; font-weight: 600; transition: all 0.15s; cursor: pointer; }
+    .filter-tab.active, .filter-tab:hover { background: var(--green-mid); color: white; }
+
+    /* PRODUCTS GRID */
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.2rem; }
+    .product-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: transform 0.2s, box-shadow 0.2s; }
+    .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .product-img { height: 160px; background: linear-gradient(135deg, var(--green-pale), var(--green-light)); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; }
+    .product-body { padding: 1rem; }
+    .product-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--green-mid); margin-bottom: 0.3rem; }
+    .product-name { font-size: 0.95rem; font-weight: 700; color: var(--green-dark); margin-bottom: 0.25rem; }
+    .product-farmer { font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+    .product-desc { font-size: 0.8rem; color: var(--text-mid); line-height: 1.5; margin-bottom: 0.8rem; }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-size: 1.05rem; font-weight: 800; color: var(--green-mid); }
+    .product-price span { font-size: 0.72rem; font-weight: 400; color: var(--text-light); }
+    .btn-add { background: var(--green-dark); color: white; border: none; padding: 0.45rem 0.9rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; transition: all 0.15s; }
+    .btn-add:hover { background: var(--green-mid); }
+
+    /* STATS CARDS */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { background: white; border-radius: var(--radius); padding: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .stat-card-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+    .stat-card-label { font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.2rem; }
+    .stat-card-value { font-size: 1.6rem; font-weight: 800; color: var(--green-dark); }
+
+    /* ORDERS TABLE */
+    .orders-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .orders-table th { background: var(--green-dark); color: white; padding: 0.8rem 1rem; text-align: left; font-size: 0.82rem; }
+    .orders-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--green-pale); font-size: 0.85rem; }
+    .status-badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 50px; font-size: 0.72rem; font-weight: 700; }
+    .status-delivered  { background: #d8f3dc; color: #2d6a4f; }
+    .status-processing { background: #fff3cd; color: #856404; }
+    .status-preparing  { background: #e8f4fd; color: #1a6fa8; }
+    .status-dispatched { background: #f3e8fd; color: #6a1ab8; }
+    .status-pending    { background: #fde2e2; color: #c0392b; }
+
+    /* PROFILE */
+    .profile-card { background: white; border-radius: var(--radius); padding: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); max-width: 500px; }
+    .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--green-pale); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--green-dark); margin-bottom: 0.4rem; }
+    .form-input { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--green-pale); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; outline: none; background: var(--cream); }
+    .form-input:focus { border-color: var(--green-mid); background: white; }
+    .btn-save { background: var(--green-dark); color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 50px; font-weight: 700; font-size: 0.9rem; }
+
+    /* CART SIDEBAR */
+    .cart-sidebar { position: fixed; top: 0; right: -420px; width: 420px; max-width: 100vw; height: 100vh; background: white; z-index: 2000; box-shadow: -4px 0 40px rgba(0,0,0,0.15); transition: right 0.35s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; }
+    .cart-sidebar.open { right: 0; }
+    .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1900; display: none; }
+    .cart-overlay.active { display: block; }
+    .cart-header { padding: 1.5rem; border-bottom: 1px solid var(--green-pale); display: flex; align-items: center; justify-content: space-between; }
+    .cart-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 800; color: var(--green-dark); }
+    .cart-close { background: none; border: none; font-size: 1.3rem; color: var(--text-mid); cursor: pointer; }
+    .cart-items { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+    .cart-item { display: flex; gap: 1rem; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--green-pale); }
+    .cart-item-emoji { font-size: 2rem; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 700; font-size: 0.88rem; color: var(--green-dark); }
+    .cart-item-price { font-size: 0.82rem; color: var(--text-mid); }
+    .cart-item-qty { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.4rem; }
+    .qty-btn { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--green-mid); background: transparent; color: var(--green-mid); font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .qty-num { font-size: 0.88rem; font-weight: 700; min-width: 18px; text-align: center; }
+    .cart-item-remove { background: none; border: none; color: #e55; cursor: pointer; }
+    .cart-footer { padding: 1.5rem; border-top: 1px solid var(--green-pale); }
+    .cart-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.05rem; margin-bottom: 1rem; color: var(--green-dark); }
+    .btn-checkout { width: 100%; padding: 1rem; background: var(--green-dark); color: white; border: none; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+    .btn-checkout:hover { background: var(--green-mid); }
+    .cart-empty { text-align: center; padding: 3rem 1rem; color: var(--text-light); }
+
+    /* CHECKOUT MODAL */
+    .modal-overlay { position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: white; border-radius: 20px; width: 100%; max-width: 440px; padding: 2.5rem; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 800; color: var(--green-dark); margin-bottom: 1.5rem; }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; background: var(--cream); border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1rem; cursor: pointer; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--green-dark); color: white; padding: 0.8rem 1.8rem; border-radius: 50px; font-size: 0.88rem; font-weight: 600; z-index: 5000; transition: transform 0.3s; white-space: nowrap; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .section-title-sm { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 800; color: var(--green-dark); margin-bottom: 1rem; }
+
+    @media (max-width: 900px) {
+      .dash-layout { grid-template-columns: 1fr; }
+      .dash-sidebar { display: none; }
+      .dash-main { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="dash-navbar">
+  <a href="index.html" class="dash-navbar-logo">JaFresh <span>Produce</span></a>
+  <div class="dash-navbar-right">
+    <div class="user-chip">
+      <div class="user-chip-avatar">🛒</div>
+      <span id="nav-username">Customer</span>
+    </div>
+    <button class="cart-btn-nav" onclick="openCart()">
+      🛒 <span class="cart-badge" id="cart-badge" style="display:none">0</span>
+    </button>
+    <button class="btn-sm btn-sm-outline" onclick="handleLogout()">Log Out</button>
+  </div>
+</nav>
+
+<div class="dash-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="dash-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Shop</div>
+      <button class="sidebar-link active" onclick="showSection('shop', this)">
+        <span class="sidebar-link-icon">🥬</span> Browse Produce
+      </button>
+      <button class="sidebar-link" onclick="showSection('farmers', this)">
+        <span class="sidebar-link-icon">🌾</span> Our Farmers
+      </button>
+      <button class="sidebar-link" onclick="showSection('subscriptions', this)">
+        <span class="sidebar-link-icon">📦</span> Subscriptions
+      </button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">My Account</div>
+      <button class="sidebar-link" onclick="showSection('orders', this)">
+        <span class="sidebar-link-icon">📋</span> My Orders
+      </button>
+      <button class="sidebar-link" onclick="showSection('profile', this)">
+        <span class="sidebar-link-icon">👤</span> My Profile
+      </button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Info</div>
+      <button class="sidebar-link" onclick="window.location.href = window.location.href.replace(/[^/]*$/, 'index.html')">
+        <span class="sidebar-link-icon">🏠</span> Back to Home
+      </button>
+      <button class="sidebar-link" onclick="handleLogout()">
+        <span class="sidebar-link-icon">🚪</span> Log Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="dash-main">
+
+    <!-- SHOP SECTION -->
+    <div class="page-section active" id="section-shop">
+      <div class="page-header">
+        <div class="page-title">Fresh Produce 🥬</div>
+        <div class="page-subtitle">Uploaded directly by Jamaican farmers — harvested fresh for you</div>
+      </div>
+      <div class="shop-controls">
+        <div class="search-wrap">
+          <span class="search-icon-inner">🔍</span>
+          <input type="text" class="search-input" id="search-input" placeholder="Search produce…" oninput="handleSearch()" />
+        </div>
+      </div>
+      <div class="filter-tabs" style="margin-bottom:1.5rem">
+        <button class="filter-tab active" onclick="filterProducts('all', this)">All</button>
+        <button class="filter-tab" onclick="filterProducts('boxes', this)">📦 Boxes</button>
+        <button class="filter-tab" onclick="filterProducts('vegetables', this)">🥦 Vegetables</button>
+        <button class="filter-tab" onclick="filterProducts('fruits', this)">🍊 Fruits</button>
+        <button class="filter-tab" onclick="filterProducts('herbs', this)">🌿 Herbs</button>
+        <button class="filter-tab" onclick="filterProducts('provisions', this)">🌽 Provisions</button>
+        <button class="filter-tab" onclick="filterProducts('gifts', this)">🎁 Gifts</button>
+      </div>
+      <div class="products-grid" id="products-grid"></div>
+    </div>
+
+    <!-- FARMERS SECTION -->
+    <div class="page-section" id="section-farmers">
+      <div class="page-header">
+        <div class="page-title">Our Partner Farmers 🌾</div>
+        <div class="page-subtitle">Real Jamaican farmers growing real food with love and care</div>
+      </div>
+      <div id="farmers-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem"></div>
+    </div>
+
+    <!-- SUBSCRIPTIONS SECTION -->
+    <div class="page-section" id="section-subscriptions">
+      <div class="page-header">
+        <div class="page-title">Subscription Plans 📦</div>
+        <div class="page-subtitle">Save more with a weekly subscription. Pause or cancel anytime.</div>
+      </div>
+
+      <!-- Current Plan Banner -->
+      <div id="current-plan-banner" style="display:none;background:var(--green-pale);border:2px solid var(--green-mid);border-radius:var(--radius);padding:1.2rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div style="display:flex;align-items:center;gap:1rem">
+          <span id="current-plan-icon" style="font-size:2rem">🌿</span>
+          <div>
+            <div style="font-weight:800;color:var(--green-dark);font-size:1rem">Active Plan: <span id="current-plan-name">None</span></div>
+            <div style="font-size:0.82rem;color:var(--text-mid)">Next billing: <span id="next-billing-date">—</span> · <span id="current-plan-price"></span></div>
+          </div>
+        </div>
+        <button onclick="cancelSubscription()" style="background:white;border:1.5px solid #e55;color:#e55;padding:0.5rem 1.2rem;border-radius:50px;font-size:0.82rem;font-weight:700;cursor:pointer">Cancel Plan</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;max-width:960px" id="plans-container">
+
+        <!-- Seedling -->
+        <div class="plan-card stat-card" id="plan-seedling" style="text-align:center;padding:2rem;border:2px solid var(--green-pale);border-radius:var(--radius);position:relative;transition:all 0.2s">
+          <div style="font-size:2.5rem;margin-bottom:0.8rem">🌱</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:var(--green-dark);margin-bottom:0.4rem">Seedling</div>
+          <div style="font-size:2rem;font-weight:900;color:var(--green-mid);margin:0.8rem 0">J$1,500<span style="font-size:0.8rem;color:var(--text-light);font-weight:400">/week</span></div>
+          <ul style="list-style:none;text-align:left;margin-bottom:1.2rem;font-size:0.85rem;color:var(--text-mid)">
+            <li style="padding:0.3rem 0;border-bottom:1px solid var(--green-pale)">✓ Small Veggie Box (6–8 items)</li>
+            <li style="padding:0.3rem 0;border-bottom:1px solid var(--green-pale)">✓ Free island-wide delivery</li>
+            <li style="padding:0.3rem 0;border-bottom:1px solid var(--green-pale)">✓ Farmer story card included</li>
+            <li style="padding:0.3rem 0">✓ Pause anytime</li>
+          </ul>
+          <button class="btn-checkout" id="btn-seedling" style="border-radius:50px;width:100%" onclick="openSubscriptionModal('Seedling', 1500, '🌱')">Subscribe Now</button>
+          <div id="active-badge-seedling" style="display:none;margin-top:0.8rem;background:var(--green-mid);color:white;padding:0.3rem 0.8rem;border-radius:50px;font-size:0.78rem;font-weight:700">✅ Current Plan</div>
+        </div>
+
+        <!-- Harvest -->
+        <div class="plan-card stat-card" id="plan-harvest" style="text-align:center;padding:2rem;border:2px solid var(--green-mid);border-radius:var(--radius);position:relative;transition:all 0.2s">
+          <div style="font-size:0.7rem;font-weight:700;background:var(--green-mid);color:white;padding:0.2rem 0.8rem;border-radius:50px;display:inline-block;margin-bottom:0.5rem;letter-spacing:1px">MOST POPULAR</div>
+          <div style="font-size:2.5rem;margin-bottom:0.8rem">🌿</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:var(--green-dark);margin-bottom:0.4rem">Harvest</div>
+          <div style="font-size:2rem;font-weight:900;color:var(--green-mid);margin:0.8rem 0">J$2,800<span style="font-size:0.8rem;color:var(--text-light);font-weight:400">/week</span></div>
+          <ul style="list-style:none;text-align:left;margin-bottom:1.2rem;font-size:0.85rem;color:var(--text-mid)">
+            <li style="padding:0.3rem 0;border-bottom:1px solid var(--green-pale)">✓ Large Veggie + Fruit Box</li>
+            <li style="padding:0.3rem 0;border-bottom:1px solid var(--green-pale)">✓ Free priority delivery</li>
+            <li style="padding:0.3rem 0;border-bottom:1px solid var(--green-pale)">✓ 10% off all add-on items</li>
+            <li style="padding:0.3rem 0;border-bottom:1px solid var(--green-pale)">✓ Weekly recipe suggestions</li>
+            <li style="padding:0.3rem 0">✓ Pause anytime</li>
+          </ul>
+          <button class="btn-checkout" id="btn-harvest" style="border-radius:50px;width:100%" onclick="openSubscriptionModal('Harvest', 2800, '🌿')">Subscribe Now</button>
+          <div id="active-badge-harvest" style="display:none;margin-top:0.8rem;background:var(--green-mid);color:white;padding:0.3rem 0.8rem;border-radius:50px;font-size:0.78rem;font-weight:700">✅ Current Plan</div>
+        </div>
+
+        <!-- Abundance -->
+        <div class="plan-card stat-card" id="plan-abundance" style="text-align:center;padding:2rem;border:2px solid var(--green-pale);border-radius:var(--radius);position:relative;transition:all 0.2s">
+          <div style="font-size:2.5rem;margin-bottom:0.8rem">🌳</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:var(--green-dark);margin-bottom:0.4rem">Abundance</div>
+          <div style="font-size:2rem;font-weight:900;color:var(--green-mid);margin:0.8rem 0">J$4,500<span style="font-size:0.8rem;color:var(--text-light);font-weight:400">/week</span></div>
+          <ul style="list-style:none;text-align:left;margin-bottom:1.2rem;font-size:0.85rem;color:var(--text-mid)">
+            <li style="padding:0.3rem 0;border-bottom:1px solid var(--green-pale)">✓ XL Multi-Box Bundle (3 boxes)</li>
+            <li style="padding:0.3rem 0;border-bottom:1px solid var(--green-pale)">✓ Same-day delivery available</li>
+            <li style="padding:0.3rem 0;border-bottom:1px solid var(--green-pale)">✓ 15% off all add-ons</li>
+            <li style="padding:0.3rem 0;border-bottom:1px solid var(--green-pale)">✓ Dedicated farmer liaison</li>
+            <li style="padding:0.3rem 0">✓ Custom box requests</li>
+          </ul>
+          <button class="btn-checkout" id="btn-abundance" style="border-radius:50px;width:100%" onclick="openSubscriptionModal('Abundance', 4500, '🌳')">Subscribe Now</button>
+          <div id="active-badge-abundance" style="display:none;margin-top:0.8rem;background:var(--green-mid);color:white;padding:0.3rem 0.8rem;border-radius:50px;font-size:0.78rem;font-weight:700">✅ Current Plan</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS SECTION -->
+    <div class="page-section" id="section-orders">
+      <div class="page-header">
+        <div class="page-title">My Orders 📋</div>
+        <div class="page-subtitle">Track all your JaFresh deliveries</div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-card-icon">📦</div><div class="stat-card-label">Total Orders</div><div class="stat-card-value" id="total-orders">0</div></div>
+        <div class="stat-card"><div class="stat-card-icon">💰</div><div class="stat-card-label">Total Spent</div><div class="stat-card-value" id="total-spent">J$0</div></div>
+        <div class="stat-card"><div class="stat-card-icon">🚚</div><div class="stat-card-label">Next Delivery</div><div class="stat-card-value" style="font-size:1rem">This Friday</div></div>
+        <div class="stat-card"><div class="stat-card-icon">🌿</div><div class="stat-card-label">Active Plan</div><div class="stat-card-value" id="active-plan-display" style="font-size:1rem">None</div></div>
+      </div>
+      <div class="section-title-sm">Order History</div>
+      <table class="orders-table">
+        <thead><tr><th>Order ID</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th>Progress</th></tr></thead>
+        <tbody id="orders-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- PROFILE SECTION -->
+    <div class="page-section" id="section-profile">
+      <div class="page-header">
+        <div class="page-title">My Profile 👤</div>
+        <div class="page-subtitle">Manage your account and delivery details</div>
+      </div>
+      <div class="profile-card">
+        <div class="profile-avatar">🛒</div>
+        <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="profile-firstname" /></div>
+        <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="profile-lastname" /></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="profile-email" type="email" /></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="profile-phone" placeholder="(876)370-3761" /></div>
+        <div class="form-group"><label class="form-label">Delivery Address</label><input class="form-input" id="profile-address" placeholder="Enter your delivery address" /></div>
+        <div class="form-group">
+          <label class="form-label">Parish</label>
+          <select class="form-input" id="profile-parish">
+            <option>Kingston</option><option>St. Andrew</option><option>St. Catherine</option>
+            <option>St. James</option><option>Manchester</option><option>Clarendon</option>
+            <option>St. Elizabeth</option><option>Westmoreland</option><option>Hanover</option>
+            <option>St. Ann</option><option>St. Mary</option><option>Portland</option>
+            <option>St. Thomas</option><option>Trelawny</option>
+          </select>
+        </div>
+        <button class="btn-save" onclick="saveProfile()">Save Changes ✅</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- CART SIDEBAR -->
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal" style="max-width:520px;padding:0;overflow:hidden">
+    <div id="product-modal-img" style="width:100%;height:220px;overflow:hidden;position:relative;background:linear-gradient(135deg,var(--green-pale),var(--green-light));display:flex;align-items:center;justify-content:center;font-size:5rem"></div>
+    <div style="padding:1.8rem">
+      <button class="modal-close" onclick="document.getElementById('product-modal').classList.remove('active')" style="top:1rem;right:1rem;position:absolute;z-index:10">✕</button>
+      <div id="product-modal-tag" style="font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green-mid);margin-bottom:0.4rem"></div>
+      <div id="product-modal-name" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;color:var(--green-dark);margin-bottom:0.3rem"></div>
+      <div id="product-modal-farmer" style="font-size:0.82rem;color:var(--text-light);margin-bottom:1rem"></div>
+      <div id="product-modal-desc" style="font-size:0.9rem;color:var(--text-mid);line-height:1.8;margin-bottom:1.5rem;max-height:200px;overflow-y:auto"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--green-pale)">
+        <div>
+          <div id="product-modal-price" style="font-size:1.6rem;font-weight:900;color:var(--green-mid)"></div>
+          <div id="product-modal-stock" style="font-size:0.78rem;color:var(--text-light);margin-top:2px"></div>
+        </div>
+        <button id="product-modal-add-btn" style="background:var(--green-dark);color:white;border:none;padding:0.8rem 1.8rem;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer" onclick="addToCartFromModal()">+ Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header">
+    <div class="cart-title">🛒 Your Cart</div>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items-list">
+    <div class="cart-empty"><div style="font-size:3rem">🛒</div><p>Your cart is empty</p></div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total"><span>Total</span><span id="cart-total-display">J$0</span></div>
+    <button class="btn-checkout" onclick="openCheckout()">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkout-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('checkout-modal').classList.remove('active')">✕</button>
+    <div class="modal-title">Checkout 🛒</div>
+    <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="co-name" autocomplete="name" /></div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="co-email" type="email" autocomplete="email" /></div>
+    <div class="form-group"><label class="form-label">Delivery Address</label><input class="form-input" id="co-address" placeholder="Street address" autocomplete="street-address" /></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem">
+      <div class="form-group"><label class="form-label">Parish</label>
+        <select class="form-input" id="co-parish">
+          <option value="">Select</option>
+          <option>Kingston</option><option>St. Andrew</option><option>St. Catherine</option>
+          <option>St. James</option><option>Manchester</option><option>Clarendon</option>
+          <option>St. Elizabeth</option><option>Westmoreland</option><option>Hanover</option>
+          <option>St. Ann</option><option>St. Mary</option><option>Portland</option>
+          <option>St. Thomas</option><option>Trelawny</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="co-phone" placeholder="(876)370-3761" autocomplete="tel" /></div>
+    </div>
+
+    <!-- STRIPE CARD ELEMENT -->
+    <div class="form-group">
+      <label class="form-label">Card Details <span style="color:var(--green-mid);font-size:0.75rem">🔒 Secured by Stripe</span></label>
+      <div id="stripe-card-element" style="border:1.5px solid var(--green-pale);border-radius:var(--radius-sm);padding:0.85rem 1rem;background:var(--cream);transition:border-color 0.2s"></div>
+      <div id="stripe-card-errors" style="color:#c0392b;font-size:0.8rem;margin-top:0.4rem;display:none"></div>
+      <small style="color:var(--text-light);font-size:0.75rem">Test card: 4242 4242 4242 4242 · Any future date · Any CVC</small>
+    </div>
+
+    <div style="background:var(--green-pale);padding:1rem;border-radius:8px;display:flex;justify-content:space-between;font-weight:700;margin:1rem 0">
+      <span>Order Total</span><span id="co-total" style="color:var(--green-mid)">J$0</span>
+    </div>
+    <button class="btn-checkout" id="btn-place-order" onclick="placeOrder()">
+      🔒 Pay & Place Order
+    </button>
+    <div style="text-align:center;font-size:0.75rem;color:var(--text-light);margin-top:0.8rem">
+      Powered by <strong>Stripe</strong> · No real charges in test mode
+    </div>
+  </div>
+</div>
+
+<!-- ORDER SUCCESS MODAL -->
+<div class="modal-overlay" id="success-modal">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
+    <div class="modal-title" style="text-align:center">Order Placed!</div>
+    <p style="color:var(--text-mid);font-size:0.88rem;line-height:1.6">Your order <strong id="order-id-display"></strong> has been placed. Our farmers will harvest your produce fresh and deliver within 24–48 hours!</p>
+    <button class="btn-checkout" style="margin-top:1.5rem;border-radius:50px" onclick="document.getElementById('success-modal').classList.remove('active')">Continue Shopping 🥬</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- SUBSCRIPTION PAYMENT MODAL -->
+<div class="modal-overlay" id="subscription-modal" onclick="if(event.target===this)this.classList.remove('active')">
+  <div class="modal" style="max-width:440px">
+    <button class="modal-close" onclick="document.getElementById('subscription-modal').classList.remove('active')">✕</button>
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div id="sub-modal-icon" style="font-size:3rem;margin-bottom:0.5rem">🌿</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:800;color:var(--green-dark)">Subscribe to <span id="sub-modal-name">Harvest</span></div>
+      <div id="sub-modal-price" style="font-size:1.8rem;font-weight:900;color:var(--green-mid);margin:0.5rem 0">J$2,800/week</div>
+      <div style="font-size:0.82rem;color:var(--text-light)">Billed weekly · Cancel anytime</div>
+    </div>
+
+    <div style="background:var(--cream);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.2rem;font-size:0.85rem;color:var(--text-mid)">
+      <div style="font-weight:700;color:var(--green-dark);margin-bottom:0.5rem">📋 Billing Summary</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem"><span>Weekly subscription</span><span id="sub-summary-price" style="font-weight:700">J$2,800</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem"><span>Delivery</span><span style="color:var(--green-mid);font-weight:700">FREE</span></div>
+      <div style="display:flex;justify-content:space-between;border-top:1px solid var(--green-pale);padding-top:0.5rem;margin-top:0.3rem;font-weight:800;color:var(--green-dark)"><span>Total / week</span><span id="sub-summary-total">J$2,800</span></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Delivery Address *</label>
+      <input type="text" class="form-input" id="sub-address" placeholder="Enter your delivery address" autocomplete="street-address" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Parish *</label>
+      <select class="form-input" id="sub-parish" autocomplete="address-level1">
+        <option value="">Select parish</option>
+        <option>Kingston</option><option>St. Andrew</option><option>St. Catherine</option>
+        <option>St. James</option><option>Manchester</option><option>Clarendon</option>
+        <option>St. Elizabeth</option><option>Westmoreland</option><option>Hanover</option>
+        <option>St. Ann</option><option>St. Mary</option><option>Portland</option>
+        <option>St. Thomas</option><option>Trelawny</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Phone *</label>
+      <input type="tel" class="form-input" id="sub-phone" placeholder="(876)370-3761" autocomplete="tel" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Card Details <span style="color:var(--green-mid);font-size:0.75rem">🔒 Secured by Stripe</span></label>
+      <div id="stripe-sub-card-element" style="border:1.5px solid var(--green-pale);border-radius:var(--radius-sm);padding:0.85rem 1rem;background:var(--cream);transition:border-color 0.2s"></div>
+      <div id="stripe-sub-card-errors" style="color:#c0392b;font-size:0.8rem;margin-top:0.4rem;display:none"></div>
+      <small style="color:var(--text-light);font-size:0.75rem">Test card: 4242 4242 4242 4242 · Any future date · Any CVC</small>
+    </div>
+
+    <button id="btn-confirm-subscription" class="btn-checkout" style="border-radius:50px;margin-top:0.5rem" onclick="confirmSubscription()">
+      🔒 Confirm & Pay Subscription
+    </button>
+    <div style="text-align:center;font-size:0.75rem;color:var(--text-light);margin-top:0.8rem">
+      Powered by <strong>Stripe</strong> · No real charges in test mode
+    </div>
+  </div>
+</div>
+
+<!-- SUBSCRIPTION SUCCESS MODAL -->
+<div class="modal-overlay" id="sub-success-modal" onclick="if(event.target===this)this.classList.remove('active')">
+  <div class="modal" style="max-width:400px;text-align:center">
+    <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;color:var(--green-dark);margin-bottom:0.5rem">You're Subscribed!</div>
+    <div id="sub-success-plan" style="font-size:1.1rem;color:var(--green-mid);font-weight:700;margin-bottom:1rem"></div>
+    <p style="color:var(--text-mid);font-size:0.88rem;line-height:1.6;margin-bottom:1.5rem">
+      Your first delivery will arrive this week! Our farmers are already harvesting your fresh produce. You'll receive a WhatsApp confirmation shortly.
+    </p>
+    <button class="btn-checkout" style="border-radius:50px" onclick="document.getElementById('sub-success-modal').classList.remove('active')">
+      Continue Shopping 🥬
+    </button>
+  </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script src="js/db.js"></script>
+<script>
+  // ── STRIPE SETUP ──────────────────────────────
+  const stripe  = Stripe('pk_test_51TJO8HRsv7GAkfLEibpY2ZEGOAPJsXhEjh6E47UE4kQ3CioLkn1aRKTIyK8OHQd3Z3k7qcifNMRP9JHMRtR0n4Wz00Rc9HwRKt');
+  const elements = stripe.elements();
+
+  const cardStyle = {
+    style: {
+      base: {
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: '15px',
+        color: '#1a1a1a',
+        '::placeholder': { color: '#aab7c4' },
+        iconColor: '#2d6a4f',
+      },
+      invalid: { color: '#c0392b', iconColor: '#c0392b' }
+    }
+  };
+
+  let cardElement = null;
+
+  function initStripe() {
+    if (cardElement) return; // already initialized
+    cardElement = elements.create('card', cardStyle);
+    cardElement.mount('#stripe-card-element');
+
+    // Update border color on focus
+    cardElement.on('focus', () => {
+      document.getElementById('stripe-card-element').style.borderColor = 'var(--green-mid)';
+    });
+    cardElement.on('blur', () => {
+      document.getElementById('stripe-card-element').style.borderColor = 'var(--green-pale)';
+    });
+
+    // Show validation errors
+    cardElement.on('change', e => {
+      const errEl = document.getElementById('stripe-card-errors');
+      if (e.error) {
+        errEl.textContent = e.error.message;
+        errEl.style.display = 'block';
+      } else {
+        errEl.style.display = 'none';
+      }
+    });
+  }
+  DB.initData();
+
+  // Auth guard
+  const user = DB.getCurrentUser();
+  if (!user || user.role !== 'customer') window.location.href = window.location.href.replace(/[^/]*$/, 'login-customer.html');
+
+  // Init
+  document.getElementById('nav-username').textContent = user ? user.firstName : 'Customer';
+  if (user) {
+    document.getElementById('profile-firstname').value = user.firstName || '';
+    document.getElementById('profile-lastname').value  = user.lastName  || '';
+    document.getElementById('profile-email').value     = user.email     || '';
+    document.getElementById('profile-phone').value     = user.phone     || '';
+  }
+
+  renderProducts('all');
+  renderFarmers();
+  renderOrders();
+  updateCartUI();
+  updateSubscriptionUI();
+
+  // ── NAVIGATION ────────────────────────────────
+  function showSection(name, btn) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('section-' + name).classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  // ── PRODUCTS ──────────────────────────────────
+  function renderProducts(category) {
+    const products = category === 'search'
+            ? DB.searchProducts(document.getElementById('search-input').value)
+            : DB.getProducts(category);
+    const grid = document.getElementById('products-grid');
+    if (!products.length) { grid.innerHTML = `<p style="color:var(--text-light);padding:2rem">No products found.</p>`; return; }
+    grid.innerHTML = products.map(p => {
+      const farmer = DB.getFarmer(p.farmer_id);
+      return `
+      <div class="product-card" onclick="openProductModal(${p.id})" style="cursor:pointer">
+        <div class="product-img" style="overflow:hidden">${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'" />` : p.emoji}</div>
+        <div class="product-body">
+          <div class="product-tag">${p.tag}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="product-farmer">🌾 ${farmer ? farmer.name : 'Local Farmer'}</div>
+          <div class="product-desc">${p.description.substring(0,85)}... <span style="color:var(--green-mid);font-weight:600;font-size:0.78rem">Read more</span></div>
+          <div class="product-footer">
+            <div class="product-price">J$${p.price.toLocaleString()} <span>${p.unit}</span></div>
+            <button class="btn-add" onclick="event.stopPropagation();addToCart(${p.id})">+ Add</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function filterProducts(category, btn) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderProducts(category);
+  }
+
+  function handleSearch() {
+    const q = document.getElementById('search-input').value;
+    renderProducts(q.length > 1 ? 'search' : 'all');
+  }
+
+  // ── FARMERS ───────────────────────────────────
+  function renderFarmers() {
+    const grid = document.getElementById('farmers-grid');
+    grid.innerHTML = DB.getFarmers().map(f => `
+      <div style="background:white;border-radius:var(--radius);padding:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+        <div style="width:56px;height:56px;border-radius:50%;background:var(--green-pale);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:0.8rem;border:2px solid var(--gold)">${f.emoji}</div>
+        <div style="font-weight:700;color:var(--green-dark)">${f.name}</div>
+        <div style="font-size:0.78rem;color:var(--green-mid);margin-bottom:0.5rem">📍 ${f.location} · ${f.farmName || 'Local Farm'}</div>
+        <div style="font-size:0.82rem;color:var(--text-mid);line-height:1.5;margin-bottom:0.8rem">${f.bio}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.3rem">${f.products.map(p => `<span style="background:var(--green-pale);color:var(--green-mid);font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:50px;font-weight:600">${p}</span>`).join('')}</div>
+      </div>
+    `).join('');
+  }
+
+  // ── ORDERS ────────────────────────────────────
+  function renderOrders() {
+    const orders = DB.getUserOrders(user?.id);
+    document.getElementById('total-orders').textContent = orders.length;
+    document.getElementById('total-spent').textContent  = `J$${orders.reduce((s,o) => s + o.total, 0).toLocaleString()}`;
+
+    if (!orders.length) {
+      document.getElementById('orders-tbody').innerHTML = `
+        <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-light)">
+          No orders yet. Start shopping! 🥬
+        </td></tr>`;
+      return;
+    }
+
+    const statusIcon = {
+      'Processing': '⏳',
+      'Preparing':  '👨‍🍳',
+      'Dispatched': '🚚',
+      'Delivered':  '✅'
+    };
+
+    document.getElementById('orders-tbody').innerHTML = orders.map(o => {
+      const itemNames  = o.items?.map(i => `${i.name} x${i.qty}`).join(', ') || 'Produce Box';
+      const shortItems = itemNames.length > 35 ? itemNames.substring(0, 35) + '…' : itemNames;
+      const icon       = statusIcon[o.status] || '⏳';
+      const statusKey  = o.status.toLowerCase();
+
+      return `<tr>
+        <td><strong>${o.id}</strong></td>
+        <td>${o.date}</td>
+        <td title="${itemNames}">${shortItems}</td>
+        <td>J$${o.total.toLocaleString()}</td>
+        <td>
+          <span class="status-badge status-${statusKey}">${icon} ${o.status}</span>
+          ${o.status === 'Dispatched' ? `<div style="font-size:0.72rem;color:var(--text-light);margin-top:3px">Expected delivery: 1–2 days</div>` : ''}
+          ${o.status === 'Delivered'  ? `<div style="font-size:0.72rem;color:var(--green-mid);margin-top:3px">Delivered ✓</div>` : ''}
+        </td>
+        <td>
+          <div style="display:flex;gap:4px">
+            ${['Processing','Preparing','Dispatched','Delivered'].map(s => `
+              <div title="${s}" style="width:10px;height:10px;border-radius:50%;background:${o.status === s || ['Processing','Preparing','Dispatched','Delivered'].indexOf(o.status) > ['Processing','Preparing','Dispatched','Delivered'].indexOf(s) ? 'var(--green-mid)' : 'var(--green-pale)'}"></div>
+            `).join('')}
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Auto-refresh orders every 10 seconds so customer sees farmer status updates
+  setInterval(() => {
+    const activeSection = document.querySelector('.page-section.active');
+    if (activeSection && activeSection.id === 'section-orders') {
+      renderOrders();
+    }
+  }, 10000);
+
+  // ── CART ──────────────────────────────────────
+  function addToCart(id) {
+    DB.addToCart(id);
+    updateCartUI();
+    renderCartItems();
+    openCart();
+    showToast('✅ Added to cart!');
+  }
+
+  function updateCartUI() {
+    const count = DB.getCartCount();
+    const badge = document.getElementById('cart-badge');
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+  }
+
+  function openCart() {
+    document.getElementById('cart-sidebar').classList.add('open');
+    document.getElementById('cart-overlay').classList.add('active');
+    renderCartItems();
+  }
+
+  function closeCart() {
+    document.getElementById('cart-sidebar').classList.remove('open');
+    document.getElementById('cart-overlay').classList.remove('active');
+  }
+
+  function renderCartItems() {
+    const cart = DB.getCart();
+    const container = document.getElementById('cart-items-list');
+    document.getElementById('cart-total-display').textContent = `J$${DB.getCartTotal().toLocaleString()}`;
+    if (!cart.length) { container.innerHTML = `<div class="cart-empty"><div style="font-size:3rem">🛒</div><p>Your cart is empty</p></div>`; return; }
+    container.innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <div class="cart-item-emoji">${item.emoji}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-price">J$${item.price.toLocaleString()}${item.unit}</div>
+          <div class="cart-item-qty">
+            <button class="qty-btn" onclick="changeQty(${item.id}, ${item.qty-1})">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.id}, ${item.qty+1})">+</button>
+          </div>
+        </div>
+        <button class="cart-item-remove" onclick="removeItem(${item.id})">🗑</button>
+      </div>`).join('');
+  }
+
+  function changeQty(id, qty) { if (qty < 1) { removeItem(id); return; } DB.updateQty(id, qty); renderCartItems(); updateCartUI(); }
+  function removeItem(id) { DB.removeFromCart(id); renderCartItems(); updateCartUI(); }
+
+  // ── CHECKOUT ──────────────────────────────────
+  function openCheckout() {
+    if (!DB.getCart().length) { showToast('Your cart is empty!'); return; }
+    closeCart();
+    document.getElementById('co-name').value  = `${user.firstName} ${user.lastName}`;
+    document.getElementById('co-email').value = user.email;
+    document.getElementById('co-total').textContent = `J$${DB.getCartTotal().toLocaleString()}`;
+    document.getElementById('checkout-modal').classList.add('active');
+    // Initialize Stripe card element after modal is visible
+    setTimeout(() => initStripe(), 100);
+  }
+
+  async function placeOrder() {
+    const name    = document.getElementById('co-name').value.trim();
+    const address = document.getElementById('co-address').value.trim();
+    const phone   = document.getElementById('co-phone').value.trim();
+    const parish  = document.getElementById('co-parish').value;
+    const email   = document.getElementById('co-email').value.trim();
+
+    if (!name)    { showToast('⚠️ Please enter your full name'); return; }
+    if (!email)   { showToast('⚠️ Please enter your email'); return; }
+    if (!address) { showToast('⚠️ Please enter your delivery address'); return; }
+    if (!parish)  { showToast('⚠️ Please select your parish'); return; }
+    if (!phone)   { showToast('⚠️ Please enter your phone number'); return; }
+    if (!validatePhone(phone)) { showToast('⚠️ Phone must be in format (876)370-3761'); return; }
+    if (!cardElement) { showToast('⚠️ Please enter your card details'); return; }
+
+    const btn = document.getElementById('btn-place-order');
+    btn.textContent = '🔄 Processing Payment…'; btn.disabled = true;
+
+    try {
+      // Create a payment method using the card element
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+        billing_details: { name, email }
+      });
+
+      if (error) {
+        // Show Stripe error
+        document.getElementById('stripe-card-errors').textContent = error.message;
+        document.getElementById('stripe-card-errors').style.display = 'block';
+        btn.textContent = '🔒 Pay & Place Order'; btn.disabled = false;
+        return;
+      }
+
+      // Payment method created successfully — simulate payment confirmation
+      // In production you'd send paymentMethod.id to your server
+      console.log('✅ Stripe Payment Method Created:', paymentMethod.id);
+
+      // Place the order in our database
+      const order = DB.placeOrder({
+        userId: user.id,
+        customerName: name,
+        customerEmail: email,
+        address, phone, parish,
+        paymentMethodId: paymentMethod.id,
+        paymentStatus: 'paid'
+      });
+
+      // Reset card element for next use
+      cardElement.clear();
+      document.getElementById('stripe-card-errors').style.display = 'none';
+
+      document.getElementById('checkout-modal').classList.remove('active');
+      document.getElementById('order-id-display').textContent = order.id;
+      document.getElementById('success-modal').classList.add('active');
+      btn.textContent = '🔒 Pay & Place Order'; btn.disabled = false;
+      updateCartUI();
+      renderCartItems();
+      renderOrders();
+
+    } catch (err) {
+      showToast('⚠️ Payment failed. Please try again.');
+      btn.textContent = '🔒 Pay & Place Order'; btn.disabled = false;
+    }
+  }
+
+  // ── PROFILE ───────────────────────────────────
+  function saveProfile() { showToast('✅ Profile saved!'); }
+
+  // ── PRODUCT MODAL ─────────────────────────────
+  let _modalProductId = null;
+
+  function openProductModal(id) {
+    const p = DB.getProduct(id);
+    if (!p) return;
+    const farmer = DB.getFarmer(p.farmer_id);
+    _modalProductId = id;
+
+    const imgEl = document.getElementById('product-modal-img');
+    imgEl.innerHTML = p.image
+            ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=font-size:5rem>${p.emoji}</span>'" />`
+            : p.emoji;
+
+    document.getElementById('product-modal-tag').textContent    = p.tag;
+    document.getElementById('product-modal-name').textContent   = p.name;
+    document.getElementById('product-modal-farmer').textContent = `🌾 ${farmer ? farmer.name + ' · ' + farmer.location : 'Local Farmer'}`;
+    document.getElementById('product-modal-desc').textContent   = p.description;
+    document.getElementById('product-modal-price').textContent  = `J$${p.price.toLocaleString()} ${p.unit}`;
+    document.getElementById('product-modal-stock').textContent  = `${p.stock} units available`;
+    document.getElementById('product-modal').classList.add('active');
+  }
+
+  function addToCartFromModal() {
+    if (_modalProductId) {
+      addToCart(_modalProductId);
+      document.getElementById('product-modal').classList.remove('active');
+    }
+  }
+
+  // close modal on overlay click
+  document.getElementById('product-modal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('active');
+  });
+  // ── SUBSCRIPTION ──────────────────────────────
+  let _selectedPlan = null;
+
+  let subCardElement = null;
+
+  function initSubStripe() {
+    if (subCardElement) return;
+    subCardElement = elements.create('card', cardStyle);
+    subCardElement.mount('#stripe-sub-card-element');
+    subCardElement.on('focus', () => {
+      document.getElementById('stripe-sub-card-element').style.borderColor = 'var(--green-mid)';
+    });
+    subCardElement.on('blur', () => {
+      document.getElementById('stripe-sub-card-element').style.borderColor = 'var(--green-pale)';
+    });
+    subCardElement.on('change', e => {
+      const errEl = document.getElementById('stripe-sub-card-errors');
+      if (e.error) { errEl.textContent = e.error.message; errEl.style.display = 'block'; }
+      else { errEl.style.display = 'none'; }
+    });
+  }
+
+  function openSubscriptionModal(planName, price, icon) {
+    const currentSub = DB.getSubscription(user.id);
+    if (currentSub && currentSub.plan === planName) {
+      showToast(`You are already on the ${planName} plan!`); return;
+    }
+    _selectedPlan = { name: planName, price, icon };
+
+    document.getElementById('sub-modal-name').textContent    = planName;
+    document.getElementById('sub-modal-icon').textContent    = icon;
+    document.getElementById('sub-modal-price').textContent   = `J$${price.toLocaleString()}/week`;
+    document.getElementById('sub-summary-price').textContent = `J$${price.toLocaleString()}`;
+    document.getElementById('sub-summary-total').textContent = `J$${price.toLocaleString()}`;
+    document.getElementById('sub-address').value = user.address || '';
+    document.getElementById('sub-phone').value   = user.phone   || '';
+    document.getElementById('subscription-modal').classList.add('active');
+    setTimeout(() => initSubStripe(), 100);
+  }
+
+  async function confirmSubscription() {
+    const address = document.getElementById('sub-address').value.trim();
+    const parish  = document.getElementById('sub-parish').value;
+    const phone   = document.getElementById('sub-phone').value.trim();
+
+    if (!address) { showToast('⚠️ Please enter your delivery address'); return; }
+    if (!parish)  { showToast('⚠️ Please select your parish'); return; }
+    if (!phone)   { showToast('⚠️ Please enter your phone number'); return; }
+    if (!validatePhone(phone)) { showToast('⚠️ Phone must be in format (876)370-3761'); return; }
+    if (!subCardElement) { showToast('⚠️ Please enter your card details'); return; }
+
+    const btn = document.getElementById('btn-confirm-subscription');
+    btn.textContent = '🔄 Processing Payment…'; btn.disabled = true;
+
+    try {
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: subCardElement,
+        billing_details: { name: `${user.firstName} ${user.lastName}`, email: user.email }
+      });
+
+      if (error) {
+        document.getElementById('stripe-sub-card-errors').textContent = error.message;
+        document.getElementById('stripe-sub-card-errors').style.display = 'block';
+        btn.textContent = '🔒 Confirm & Pay Subscription'; btn.disabled = false;
+        return;
+      }
+
+      console.log('✅ Subscription Payment Method:', paymentMethod.id);
+
+      DB.saveSubscription(user.id, {
+        plan: _selectedPlan.name, price: _selectedPlan.price, icon: _selectedPlan.icon,
+        address, parish, phone,
+        startDate: new Date().toLocaleDateString('en-JM', { day: 'numeric', month: 'short', year: 'numeric' }),
+        nextBilling: getNextFriday(),
+        status: 'Active',
+        paymentMethodId: paymentMethod.id
+      });
+
+      const updatedUser = { ...user, subscription: _selectedPlan.name, address, parish, phone };
+      DB.setCurrentUser(updatedUser);
+
+      subCardElement.clear();
+      document.getElementById('stripe-sub-card-errors').style.display = 'none';
+      document.getElementById('subscription-modal').classList.remove('active');
+      document.getElementById('sub-success-plan').textContent = `${_selectedPlan.icon} ${_selectedPlan.name} Plan — J$${_selectedPlan.price.toLocaleString()}/week`;
+      document.getElementById('sub-success-modal').classList.add('active');
+      btn.textContent = '🔒 Confirm & Pay Subscription'; btn.disabled = false;
+      updateSubscriptionUI();
+
+    } catch (err) {
+      showToast('⚠️ Payment failed. Please try again.');
+      btn.textContent = '🔒 Confirm & Pay Subscription'; btn.disabled = false;
+    }
+  }
+
+  function cancelSubscription() {
+    if (!confirm('Are you sure you want to cancel your subscription?')) return;
+    DB.cancelSubscription(user.id);
+    const updatedUser = { ...user, subscription: null };
+    DB.setCurrentUser(updatedUser);
+    updateSubscriptionUI();
+    showToast('✅ Subscription cancelled successfully');
+  }
+
+  function updateSubscriptionUI() {
+    const sub = DB.getSubscription(user.id);
+    const banner = document.getElementById('current-plan-banner');
+
+    // Hide all active badges and reset button text
+    ['seedling', 'harvest', 'abundance'].forEach(p => {
+      document.getElementById(`active-badge-${p}`).style.display = 'none';
+      const btn = document.getElementById(`btn-${p}`);
+      if (btn) { btn.textContent = 'Subscribe Now'; btn.disabled = false; }
+    });
+
+    if (sub && sub.status === 'Active') {
+      // Show banner
+      banner.style.display = 'flex';
+      document.getElementById('current-plan-icon').textContent  = sub.icon;
+      document.getElementById('current-plan-name').textContent  = sub.plan + ' Plan';
+      document.getElementById('current-plan-price').textContent = `J$${sub.price.toLocaleString()}/week`;
+      document.getElementById('next-billing-date').textContent  = sub.nextBilling;
+
+      // Show active badge on current plan card
+      const planKey = sub.plan.toLowerCase();
+      const badge = document.getElementById(`active-badge-${planKey}`);
+      const btn   = document.getElementById(`btn-${planKey}`);
+      if (badge) badge.style.display = 'inline-block';
+      if (btn)   { btn.textContent = '✅ Current Plan'; btn.disabled = true; }
+
+      // Update orders section stat
+      const display = document.getElementById('active-plan-display');
+      if (display) display.textContent = `${sub.icon} ${sub.plan}`;
+    } else {
+      banner.style.display = 'none';
+      const display = document.getElementById('active-plan-display');
+      if (display) display.textContent = 'None';
+    }
+  }
+
+  function getNextFriday() {
+    const today = new Date();
+    const day   = today.getDay();
+    const diff  = (5 - day + 7) % 7 || 7;
+    const next  = new Date(today);
+    next.setDate(today.getDate() + diff);
+    return next.toLocaleDateString('en-JM', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  // Listen for localStorage changes (same browser, different tab)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'jf_orders') {
+      renderOrders();
+      showToast('🔄 Order status updated!');
+    }
+    if (e.key === 'jf_products') {
+      renderProducts('all');
+    }
+  });
+
+  // ── PHONE FORMATTING ──────────────────────────
+  function formatPhone(input) {
+    let val = input.value.replace(/\D/g, '');
+    if (val.length > 10) val = val.slice(0, 10);
+    if (val.length >= 7)      val = `(${val.slice(0,3)})${val.slice(3,6)}-${val.slice(6)}`;
+    else if (val.length >= 4) val = `(${val.slice(0,3)})${val.slice(3)}`;
+    else if (val.length > 0)  val = `(${val}`;
+    input.value = val;
+  }
+
+  function validatePhone(phone) {
+    return /^\(\d{3}\)\d{3}-\d{4}$/.test(phone);
+  }
+
+  // Attach formatter to all phone fields
+  ['co-phone', 'sub-phone'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', function() { formatPhone(this); });
+  });
+
+  function handleLogout() { DB.logout(); window.location.href = window.location.href.replace(/[^/]*$/, 'login-customer.html'); }
+
+  // ── AUTO LOGOUT AFTER 30 MINS IDLE ────────────
+  (function autoLogout() {
+    const TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+    const WARNING_MS = 60 * 1000;      // warn 1 minute before
+    let logoutTimer, warningTimer, warningToast;
+
+    function resetTimers() {
+      clearTimeout(logoutTimer);
+      clearTimeout(warningTimer);
+
+      // Remove warning toast if still showing
+      if (warningToast) { warningToast.remove(); warningToast = null; }
+
+      // Show warning 1 minute before logout
+      warningTimer = setTimeout(() => {
+        warningToast = document.createElement('div');
+        warningToast.style.cssText = `
+          position:fixed; bottom:90px; right:24px; z-index:9999;
+          background:#856404; color:white; padding:1rem 1.4rem;
+          border-radius:12px; font-size:0.88rem; font-weight:600;
+          box-shadow:0 4px 20px rgba(0,0,0,0.2); max-width:280px;
+          line-height:1.5;
+        `;
+        warningToast.innerHTML = '⏳ You\'ll be logged out in 1 minute due to inactivity.<br><span style="font-size:0.8rem;opacity:0.85">Move your mouse or tap to stay logged in.</span>';
+        document.body.appendChild(warningToast);
+      }, TIMEOUT_MS - WARNING_MS);
+
+      // Logout after full timeout
+      logoutTimer = setTimeout(() => {
+        DB.logout();
+        alert('You have been logged out due to 30 minutes of inactivity.');
+        window.location.href = window.location.href.replace(/[^/]*$/, 'login-customer.html');
+      }, TIMEOUT_MS);
+    }
+
+    // Reset on any user activity
+    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'].forEach(event => {
+      document.addEventListener(event, resetTimers, { passive: true });
+    });
+
+    resetTimers(); // start on page load
+  })();
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
