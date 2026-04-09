@@ -3,4 +3,4 @@ Allow: /
 Disallow: /dashboard-customer.html
 Disallow: /dashboard-farmer.html
 
-Sitemap: https://jafresh-produce.netlify.app/sitemap.xml
+Sitemap: https://belljay495.github.io/JaFresh-Produce/sitemap.xml
