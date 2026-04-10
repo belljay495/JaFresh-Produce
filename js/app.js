@@ -46,8 +46,8 @@ const App = {
   renderProducts(category = 'all') {
     const grid = document.getElementById('products-grid');
     const products = category === 'search'
-        ? DB.searchProducts(document.getElementById('search-input').value)
-        : DB.getProducts(category);
+      ? DB.searchProducts(document.getElementById('search-input').value)
+      : DB.getProducts(category);
 
     if (products.length === 0) {
       grid.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--text-light);grid-column:1/-1">No products found.</div>`;
@@ -56,7 +56,7 @@ const App = {
 
     grid.innerHTML = products.map(p => `
       <div class="product-card" data-id="${p.id}" onclick="App.openProductModal(${p.id})" style="cursor:pointer">
-        <div class="product-img" style="overflow:hidden">${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'" />` : p.emoji}</div>
+        <div class="product-img" style="overflow:hidden">${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.style.fontSize='4rem';this.parentElement.innerHTML='${p.emoji}'" />` : p.emoji}</div>
         <div class="product-body">
           <div class="product-tag">${p.tag}</div>
           <div class="product-name">${p.name}</div>
@@ -176,7 +176,7 @@ const App = {
     }
     this.closeCart();
     const modal = document.getElementById('checkout-modal');
-    document.getElementById('checkout-name').value  = `${user.firstName} ${user.lastName}`;
+    document.getElementById('checkout-name').value = `${user.firstName} ${user.lastName}`;
     document.getElementById('checkout-email').value = user.email;
     // Pre-fill phone & address from profile if available
     const phone = document.getElementById('checkout-phone');
@@ -328,14 +328,14 @@ const App = {
     document.getElementById('cust-name').textContent = `${user.firstName} ${user.lastName}`;
     document.getElementById('cust-email').textContent = user.email;
     document.getElementById('cust-orders-count').textContent = orders.length;
-    document.getElementById('cust-total-spent').textContent = `J$${orders.reduce((s,o) => s + o.total, 0).toLocaleString()}`;
+    document.getElementById('cust-total-spent').textContent = `J$${orders.reduce((s, o) => s + o.total, 0).toLocaleString()}`;
 
     const tbody = document.getElementById('orders-tbody');
     tbody.innerHTML = orders.map(o => `
       <tr>
         <td><strong>${o.id}</strong></td>
         <td>${o.date}</td>
-        <td>${o.items?.[0]?.name || 'Mixed Box'}${o.items?.length > 1 ? ` +${o.items.length-1} more` : ''}</td>
+        <td>${o.items?.[0]?.name || 'Mixed Box'}${o.items?.length > 1 ? ` +${o.items.length - 1} more` : ''}</td>
         <td>J$${o.total.toLocaleString()}</td>
         <td><span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span></td>
       </tr>
@@ -354,8 +354,8 @@ const App = {
 
     const container = document.getElementById('farmer-listings');
     container.innerHTML = listings.length === 0
-        ? `<p style="color:var(--text-light)">No listings yet. Add your first produce!</p>`
-        : listings.map(l => `
+      ? `<p style="color:var(--text-light)">No listings yet. Add your first produce!</p>`
+      : listings.map(l => `
         <div class="farmer-listing-card">
           <div class="listing-emoji">${l.emoji}</div>
           <div class="listing-info">
@@ -420,15 +420,15 @@ const App = {
 
     const imgEl = document.getElementById('modal-product-img');
     imgEl.innerHTML = p.image
-        ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=font-size:5rem>${p.emoji}</span>'" />`
-        : p.emoji;
+      ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=font-size:5rem>${p.emoji}</span>'" />`
+      : p.emoji;
 
-    document.getElementById('modal-product-tag').textContent    = p.tag;
-    document.getElementById('modal-product-name').textContent   = p.name;
+    document.getElementById('modal-product-tag').textContent = p.tag;
+    document.getElementById('modal-product-name').textContent = p.name;
     document.getElementById('modal-product-farmer').textContent = `🌾 ${farmer ? farmer.name + ' · ' + farmer.location : 'Local Farmer'}`;
-    document.getElementById('modal-product-desc').textContent   = p.description;
-    document.getElementById('modal-product-price').textContent  = `J$${p.price.toLocaleString()} ${p.unit}`;
-    document.getElementById('modal-product-stock').textContent  = `${p.stock} units available`;
+    document.getElementById('modal-product-desc').textContent = p.description;
+    document.getElementById('modal-product-price').textContent = `J$${p.price.toLocaleString()} ${p.unit}`;
+    document.getElementById('modal-product-stock').textContent = `${p.stock} units available`;
     document.getElementById('modal-product-add').onclick = () => { this.addToCart(id); document.getElementById('product-detail-modal').classList.remove('active'); };
     document.getElementById('product-detail-modal').classList.add('active');
   },

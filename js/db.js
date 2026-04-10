@@ -6,30 +6,60 @@ const DB = {
 
     init() {
         // Preserve farmer-uploaded products and orders before any reset
-        const currentUser  = localStorage.getItem('jf_current_user');
-        const savedOrders  = localStorage.getItem('jf_orders');
-        const savedSubs    = localStorage.getItem('jf_subscriptions');
+        const currentUser = localStorage.getItem('jf_current_user');
+        const savedOrders = localStorage.getItem('jf_orders');
+        const savedSubs = localStorage.getItem('jf_subscriptions');
 
         // Only seed products if none exist yet
         if (!localStorage.getItem('jf_products')) this._seedProducts();
-        if (!localStorage.getItem('jf_farmers'))  this._seedFarmers();
-        if (!localStorage.getItem('jf_users'))    this._seedUsers();
-        if (!localStorage.getItem('jf_orders'))   localStorage.setItem('jf_orders', JSON.stringify([]));
-        if (!localStorage.getItem('jf_cart'))     localStorage.setItem('jf_cart',   JSON.stringify([]));
+        if (!localStorage.getItem('jf_farmers')) this._seedFarmers();
+        if (!localStorage.getItem('jf_users')) this._seedUsers();
+        if (!localStorage.getItem('jf_orders')) localStorage.setItem('jf_orders', JSON.stringify([]));
+        if (!localStorage.getItem('jf_cart')) localStorage.setItem('jf_cart', JSON.stringify([]));
+
+        // Fix case-sensitive image paths and box images from earlier seed
+        const _boxImageMap = {
+            12: "images/Family veg box.png",
+            13: "images/Couple's fresh box.png",
+            14: "images/Fruit box.png",
+            15: "images/Soup & Stew Box.png"
+        };
+        const _prods = JSON.parse(localStorage.getItem('jf_products') || '[]');
+        const _fixed = _prods.map(p => {
+            if (p.image === 'images/callaloo.webp') p.image = 'images/Callaloo.webp';
+            if (p.image === 'images/thyme.jpg') p.image = 'images/Thyme.jpg';
+            if (_boxImageMap[p.id] && !p.image) p.image = _boxImageMap[p.id];
+            return p;
+        });
+        // Add box products if they don't exist yet
+        const _boxIds = [12, 13, 14, 15];
+        const _existingIds = _fixed.map(p => p.id);
+        if (!_boxIds.every(id => _existingIds.includes(id))) {
+            const _boxProducts = [
+                { id: 12, name: "Family Veg Box", category: "boxes", emoji: "📦", image: "images/Family veg box.png", price: 2500, unit: "/box", tag: "Best Value", description: "Our most popular box, perfect for a family of 4. Each weekly Family Veg Box is packed with a curated selection of the freshest seasonal vegetables straight from our partner farms. Includes callaloo, cabbage, pumpkin, escallion, thyme, scotch bonnet, and your choice of one ground provision (yellow yam or sweet potato). Everything you need to cook authentic Jamaican meals all week long. Sourced from at least 3 different verified farms to ensure variety and freshness. Delivered every Wednesday and Saturday island-wide.", farmer_id: 1, stock: 40 },
+                { id: 13, name: "Couple's Fresh Box", category: "boxes", emoji: "💚", image: "images/Couple's fresh box.png", price: 1500, unit: "/box", tag: "Perfect for 2", description: "Designed for households of 1–2 people, the Couple's Fresh Box gives you just the right amount of fresh produce without any waste. Each box includes a seasonal mix of 4–5 vegetables, 1–2 fruits, and a bundle of herbs (escallion and thyme). The selection changes weekly based on what our farmers are harvesting, so you always get peak-freshness produce. Great for couples, young professionals, or anyone who wants to eat healthier without overbuying. Delivered twice weekly on Tuesdays and Fridays.", farmer_id: 2, stock: 50 },
+                { id: 14, name: "Tropical Fruit Box", category: "boxes", emoji: "🍍", image: "images/Fruit box.png", price: 2000, unit: "/box", tag: "Fruit Lovers", description: "A vibrant box loaded with the freshest tropical fruits Jamaica has to offer. Each Tropical Fruit Box includes a dozen oranges, a ripe pineapple, a hand of bananas, and 2–3 seasonal fruits such as june plums, naseberries, star apples, or mangoes depending on what's in season. All fruits are tree-ripened and harvested within 48 hours of delivery — no cold storage, no preservatives. Perfect for juicing, snacking, fruit salads, or just enjoying the natural sweetness of Jamaican-grown fruit.", farmer_id: 3, stock: 30 },
+                { id: 15, name: "Soup & Stew Box", category: "boxes", emoji: "🍲", image: "images/Soup & Stew Box.png", price: 1800, unit: "/box", tag: "Soup Season", description: "Everything you need to make 2–3 big pots of authentic Jamaican soup or stew. The Soup & Stew Box includes pumpkin, yellow yam, sweet potato, cho cho, carrot, escallion, thyme, scotch bonnet, and a small bundle of pimento leaves. Enough ground provisions and seasoning vegetables to make Saturday beef soup, chicken foot soup, or a rich pumpkin cream soup from scratch.", farmer_id: 4, stock: 35 }
+            ];
+            const _merged = [..._fixed, ..._boxProducts.filter(b => !_existingIds.includes(b.id))];
+            localStorage.setItem('jf_products', JSON.stringify(_merged));
+        } else {
+            localStorage.setItem('jf_products', JSON.stringify(_fixed));
+        }
 
         // Restore preserved data
         if (currentUser) localStorage.setItem('jf_current_user', currentUser);
         if (savedOrders) localStorage.setItem('jf_orders', savedOrders);
-        if (savedSubs)   localStorage.setItem('jf_subscriptions', savedSubs);
+        if (savedSubs) localStorage.setItem('jf_subscriptions', savedSubs);
     },
 
     // Safe init for dashboard pages — never wipes any data
     initData() {
         if (!localStorage.getItem('jf_products')) this._seedProducts();
-        if (!localStorage.getItem('jf_farmers'))  this._seedFarmers();
-        if (!localStorage.getItem('jf_users'))    this._seedUsers();
-        if (!localStorage.getItem('jf_orders'))   localStorage.setItem('jf_orders', JSON.stringify([]));
-        if (!localStorage.getItem('jf_cart'))     localStorage.setItem('jf_cart',   JSON.stringify([]));
+        if (!localStorage.getItem('jf_farmers')) this._seedFarmers();
+        if (!localStorage.getItem('jf_users')) this._seedUsers();
+        if (!localStorage.getItem('jf_orders')) localStorage.setItem('jf_orders', JSON.stringify([]));
+        if (!localStorage.getItem('jf_cart')) localStorage.setItem('jf_cart', JSON.stringify([]));
     },
 
     // Call this ONLY when you want to completely reset everything (dev/testing)
@@ -65,7 +95,7 @@ const DB = {
         const products = [
             {
                 id: 1, name: "Fresh Callaloo Bunch", category: "vegetables", emoji: "🥬",
-                image: "images/callaloo.webp",
+                image: "images/Callaloo.webp",
                 price: 150, unit: "/lb", tag: "Local Fave",
                 description: "Callaloo is Jamaica's most beloved leafy green vegetable and a staple of traditional Jamaican cuisine. Our callaloo is freshly harvested from the fertile farms of St. Elizabeth, picked at peak ripeness to ensure maximum flavour and nutritional value. Rich in iron, calcium, and vitamins A and C, callaloo is incredibly versatile — perfect for sautéing with saltfish, steaming as a side dish, or blending into a hearty soup. Each bunch contains enough callaloo to serve a family of four. Harvested fresh every Monday and Thursday morning and delivered within 24 hours of picking.",
                 farmer_id: 1, stock: 80
@@ -100,7 +130,7 @@ const DB = {
             },
             {
                 id: 6, name: "Fresh Thyme", category: "herbs", emoji: "🌱",
-                image: "images/thyme.jpg",
+                image: "images/Thyme.jpg",
                 price: 100, unit: "/lb", tag: "Aromatic",
                 description: "Jamaican thyme is more robust and aromatic than its European counterpart, with a stronger flavour profile that elevates every dish it touches. Our fresh thyme is grown by Miss Hyacinth Brown on her family farm in St. Elizabeth, where it has been cultivated for over 30 years using traditional methods. Each pack contains a generous handful of fresh thyme sprigs, enough to season multiple dishes. Thyme is essential in Jamaican rice and peas, oxtail, brown stew chicken, soups, and any slow-cooked meat dish. It pairs beautifully with escallion and scotch bonnet to create the signature Jamaican seasoning trinity loved across the island.",
                 farmer_id: 1, stock: 75
@@ -139,6 +169,34 @@ const DB = {
                 price: 600, unit: "/each", tag: "Tropical",
                 description: "Our farm-fresh pineapples are grown by Yvette Campbell on her award-winning fruit farm in Portland, where the combination of rich soil, tropical rainfall, and warm sunshine produces pineapples of extraordinary sweetness and flavour. Each pineapple weighs approximately 1.5–2 kg and is harvested at peak ripeness — golden yellow on the outside with intensely sweet, juicy yellow flesh inside. Unlike the acidic imported pineapples found in supermarkets, our locally grown pineapples are naturally sweet with no tartness. Enjoy fresh as a snack, blended into smoothies, grilled as a dessert, or used in jerk marinades, pineapple rum punch, and tropical fruit salads. A true taste of Jamaican paradise.",
                 farmer_id: 3, stock: 35
+            },
+            {
+                id: 12, name: "Family Veg Box", category: "boxes", emoji: "📦",
+                image: "images/Family veg box.png",
+                price: 2500, unit: "/box", tag: "Best Value",
+                description: "Our most popular box, perfect for a family of 4. Each weekly Family Veg Box is packed with a curated selection of the freshest seasonal vegetables straight from our partner farms. Includes callaloo, cabbage, pumpkin, escallion, thyme, scotch bonnet, and your choice of one ground provision (yellow yam or sweet potato). Everything you need to cook authentic Jamaican meals all week long. Sourced from at least 3 different verified farms to ensure variety and freshness. Delivered every Wednesday and Saturday island-wide.",
+                farmer_id: 1, stock: 40
+            },
+            {
+                id: 13, name: "Couple's Fresh Box", category: "boxes", emoji: "💚",
+                image: "images/Couple's fresh box.png",
+                price: 1500, unit: "/box", tag: "Perfect for 2",
+                description: "Designed for households of 1–2 people, the Couple's Fresh Box gives you just the right amount of fresh produce without any waste. Each box includes a seasonal mix of 4–5 vegetables, 1–2 fruits, and a bundle of herbs (escallion and thyme). The selection changes weekly based on what our farmers are harvesting, so you always get peak-freshness produce. Great for couples, young professionals, or anyone who wants to eat healthier without overbuying. Delivered twice weekly on Tuesdays and Fridays.",
+                farmer_id: 2, stock: 50
+            },
+            {
+                id: 14, name: "Tropical Fruit Box", category: "boxes", emoji: "🍍",
+                image: "images/Fruit box.png",
+                price: 2000, unit: "/box", tag: "Fruit Lovers",
+                description: "A vibrant box loaded with the freshest tropical fruits Jamaica has to offer. Each Tropical Fruit Box includes a dozen oranges, a ripe pineapple, a hand of bananas, and 2–3 seasonal fruits such as june plums, naseberries, star apples, or mangoes depending on what's in season. All fruits are tree-ripened and harvested within 48 hours of delivery — no cold storage, no preservatives. Perfect for juicing, snacking, fruit salads, or just enjoying the natural sweetness of Jamaican-grown fruit. Sourced from farms in Portland, St. Mary, and St. Elizabeth.",
+                farmer_id: 3, stock: 30
+            },
+            {
+                id: 15, name: "Soup & Stew Box", category: "boxes", emoji: "🍲",
+                image: "images/Soup & Stew Box.png",
+                price: 1800, unit: "/box", tag: "Soup Season",
+                description: "Everything you need to make 2–3 big pots of authentic Jamaican soup or stew. The Soup & Stew Box includes pumpkin, yellow yam, sweet potato, cho cho, carrot, escallion, thyme, scotch bonnet, and a small bundle of pimento leaves. Enough ground provisions and seasoning vegetables to make Saturday beef soup, chicken foot soup, or a rich pumpkin cream soup from scratch. This box celebrates the heart of Jamaican home cooking and is especially popular during the cooler months. Curated by our farmers each week based on fresh availability.",
+                farmer_id: 4, stock: 35
             }
         ];
         localStorage.setItem('jf_products', JSON.stringify(products));
@@ -146,11 +204,11 @@ const DB = {
 
     _seedFarmers() {
         const farmers = [
-            { id: 1, name: "Hyacinth Brown", location: "St. Elizabeth", emoji: "👩🏾‍🌾", bio: "30 years of farming heritage. Specialises in leafy greens and herbs.", products: ["Callaloo","Thyme","Escallion","Pumpkin"], joined: "2023-01-15", earnings: 245000, farmName: "Brown Family Farm" },
-            { id: 2, name: "Delroy Reid", location: "Westmoreland", emoji: "👨🏿‍🌾", bio: "Third-generation farmer growing provisions on 12 acres. Chemical-free farming advocate.", products: ["Yam","Banana","Gungo Peas","Corn"], joined: "2023-02-20", earnings: 312000, farmName: "Reid Provisions" },
-            { id: 3, name: "Yvette Campbell", location: "Portland", emoji: "👩🏽‍🌾", bio: "Award-winning fruit farmer. Her pineapples and oranges are island-famous.", products: ["Oranges","Pineapple","Citrus","Papaya"], joined: "2023-03-10", earnings: 189000, farmName: "Campbell Fruit Farm" },
-            { id: 4, name: "Junior Thompson", location: "Clarendon", emoji: "👨🏾‍🌾", bio: "Young innovative farmer using drip irrigation for the finest vegetables.", products: ["Pumpkin","Sweet Potato","Cabbage","Peppers"], joined: "2023-05-01", earnings: 276000, farmName: "Thompson Farms" },
-            { id: 5, name: "Marcia Williams", location: "St. Andrew", emoji: "👩🏿‍🌾", bio: "Leading organic certified farmer with a 5-acre greenhouse operation.", products: ["Ginger","Organic Greens","Herbs","Microgreens"], joined: "2023-06-15", earnings: 398000, farmName: "Williams Organic" }
+            { id: 1, name: "Hyacinth Brown", location: "St. Elizabeth", emoji: "👩🏾‍🌾", bio: "30 years of farming heritage. Specialises in leafy greens and herbs.", products: ["Callaloo", "Thyme", "Escallion", "Pumpkin"], joined: "2023-01-15", earnings: 245000, farmName: "Brown Family Farm" },
+            { id: 2, name: "Delroy Reid", location: "Westmoreland", emoji: "👨🏿‍🌾", bio: "Third-generation farmer growing provisions on 12 acres. Chemical-free farming advocate.", products: ["Yam", "Banana", "Gungo Peas", "Corn"], joined: "2023-02-20", earnings: 312000, farmName: "Reid Provisions" },
+            { id: 3, name: "Yvette Campbell", location: "Portland", emoji: "👩🏽‍🌾", bio: "Award-winning fruit farmer. Her pineapples and oranges are island-famous.", products: ["Oranges", "Pineapple", "Citrus", "Papaya"], joined: "2023-03-10", earnings: 189000, farmName: "Campbell Fruit Farm" },
+            { id: 4, name: "Junior Thompson", location: "Clarendon", emoji: "👨🏾‍🌾", bio: "Young innovative farmer using drip irrigation for the finest vegetables.", products: ["Pumpkin", "Sweet Potato", "Cabbage", "Peppers"], joined: "2023-05-01", earnings: 276000, farmName: "Thompson Farms" },
+            { id: 5, name: "Marcia Williams", location: "St. Andrew", emoji: "👩🏿‍🌾", bio: "Leading organic certified farmer with a 5-acre greenhouse operation.", products: ["Ginger", "Organic Greens", "Herbs", "Microgreens"], joined: "2023-06-15", earnings: 398000, farmName: "Williams Organic" }
         ];
         localStorage.setItem('jf_farmers', JSON.stringify(farmers));
     },
@@ -228,7 +286,7 @@ const DB = {
     getCart() { return JSON.parse(localStorage.getItem('jf_cart') || '[]'); },
 
     addToCart(productId) {
-        const cart    = this.getCart();
+        const cart = this.getCart();
         const product = this.getProduct(parseInt(productId));
         if (!product) { console.warn('Product not found:', productId); return; }
         const existing = cart.find(i => parseInt(i.id) === parseInt(productId));
@@ -236,12 +294,12 @@ const DB = {
             existing.qty += 1;
         } else {
             cart.push({
-                id:        product.id,
-                qty:       1,
-                name:      product.name,
-                price:     product.price,
-                emoji:     product.emoji,
-                unit:      product.unit,
+                id: product.id,
+                qty: 1,
+                name: product.name,
+                price: product.price,
+                emoji: product.emoji,
+                unit: product.unit,
                 farmer_id: product.farmer_id  // ← always store farmer_id in cart
             });
         }
@@ -273,12 +331,12 @@ const DB = {
         });
 
         const newOrder = {
-            id:        'JF-' + Date.now(),
+            id: 'JF-' + Date.now(),
             ...orderData,
-            items:     cartItems,
-            total:     this.getCartTotal(),
-            status:    'Processing',
-            date:      new Date().toLocaleDateString('en-JM', { day: 'numeric', month: 'short', year: 'numeric' }),
+            items: cartItems,
+            total: this.getCartTotal(),
+            status: 'Processing',
+            date: new Date().toLocaleDateString('en-JM', { day: 'numeric', month: 'short', year: 'numeric' }),
             createdAt: new Date().toISOString()
         };
 
@@ -327,7 +385,7 @@ const DB = {
 
     updateOrderStatus(orderId, newStatus, farmerId) {
         const orders = JSON.parse(localStorage.getItem('jf_orders') || '[]');
-        const order  = orders.find(o => o.id === orderId);
+        const order = orders.find(o => o.id === orderId);
         if (order) {
             order.status = newStatus;
             order.updatedAt = new Date().toISOString();
@@ -336,8 +394,8 @@ const DB = {
     },
 
     reduceStockForOrder(orderId, farmerId) {
-        const orders  = JSON.parse(localStorage.getItem('jf_orders') || '[]');
-        const order   = orders.find(o => o.id === orderId);
+        const orders = JSON.parse(localStorage.getItem('jf_orders') || '[]');
+        const order = orders.find(o => o.id === orderId);
         if (!order || order.stockReduced) return; // prevent double reduction
 
         const products = JSON.parse(localStorage.getItem('jf_products') || '[]');
@@ -355,12 +413,12 @@ const DB = {
         // Mark order as stock reduced so we don't reduce twice
         order.stockReduced = true;
         localStorage.setItem('jf_products', JSON.stringify(products));
-        localStorage.setItem('jf_orders',   JSON.stringify(orders));
+        localStorage.setItem('jf_orders', JSON.stringify(orders));
     },
 
     getFarmerOrders(farmerId) {
         const orders = JSON.parse(localStorage.getItem('jf_orders') || '[]');
-        const fid    = String(farmerId); // normalise to string for comparison
+        const fid = String(farmerId); // normalise to string for comparison
         return orders.filter(o =>
             o.items && o.items.some(item => String(item.farmer_id) === fid)
         ).map(o => ({

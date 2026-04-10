@@ -468,6 +468,12 @@
       <div style="font-size:0.82rem;color:var(--text-light)">Billed weekly · Cancel anytime</div>
     </div>
 
+    <!-- Box Contents -->
+    <div id="sub-box-contents" style="background:var(--green-pale);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.2rem;font-size:0.84rem;color:var(--text-mid)">
+      <div style="font-weight:700;color:var(--green-dark);margin-bottom:0.6rem">🥬 What's in your box this week</div>
+      <div id="sub-box-items" style="display:flex;flex-wrap:wrap;gap:0.4rem"></div>
+    </div>
+
     <div style="background:var(--cream);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.2rem;font-size:0.85rem;color:var(--text-mid)">
       <div style="font-weight:700;color:var(--green-dark);margin-bottom:0.5rem">📋 Billing Summary</div>
       <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem"><span>Weekly subscription</span><span id="sub-summary-price" style="font-weight:700">J$2,800</span></div>
@@ -909,6 +915,17 @@
     document.getElementById('sub-summary-total').textContent = `J$${price.toLocaleString()}`;
     document.getElementById('sub-address').value = user.address || '';
     document.getElementById('sub-phone').value   = user.phone   || '';
+
+    const BOX_CONTENTS = {
+      Seedling:  ['🥬 Callaloo', '🥦 Cabbage', '🌿 Escallion', '🌱 Thyme', '🌶️ Scotch Bonnet', '🎃 Pumpkin', '🍠 Yellow Yam', '🫚 Ginger'],
+      Harvest:   ['🥬 Callaloo', '🥦 Cabbage', '🌿 Escallion', '🌱 Thyme', '🌶️ Scotch Bonnet', '🎃 Pumpkin', '🍠 Yellow Yam', '🥔 Sweet Potato', '🍊 Oranges', '🍍 Pineapple', '+ 2 seasonal items'],
+      Abundance: ['Everything in Harvest ×3', '🎁 Custom box requests', '👨‍🌾 Dedicated farmer liaison', '🍌 Bonus seasonal fruit', '🥕 Cho cho & carrots', '🌾 Pimento & bay leaves']
+    };
+    const items = BOX_CONTENTS[planName] || [];
+    document.getElementById('sub-box-items').innerHTML = items.map(item =>
+      `<span style="background:white;border:1px solid var(--green-mid);border-radius:50px;padding:0.2rem 0.7rem;font-size:0.78rem;color:var(--green-dark);font-weight:600">${item}</span>`
+    ).join('');
+
     document.getElementById('subscription-modal').classList.add('active');
     setTimeout(() => initSubStripe(), 100);
   }

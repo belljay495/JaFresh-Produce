@@ -1,325 +1,556 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Farmer Login — JaFresh Produce</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>" />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>" />
   <link rel="stylesheet" href="css/styles.css" />
   <style>
-    body { background: var(--cream); display: flex; flex-direction: column; min-height: 100vh; }
+    body {
+      background: var(--cream);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
     .auth-layout {
-      flex: 1; display: grid;
+      flex: 1;
+      display: grid;
       grid-template-columns: 1fr 1fr;
       min-height: calc(100vh - 70px);
     }
 
     .auth-panel-left {
       background: linear-gradient(160deg, #3d2010 0%, #5c3318 50%, #6b4c2a 100%);
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: flex-start;
-      padding: 4rem; position: relative; overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 4rem;
+      position: relative;
+      overflow: hidden;
     }
+
     .auth-panel-left::before {
       content: '';
-      position: absolute; inset: 0;
+      position: absolute;
+      inset: 0;
       background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
+
     .left-badge {
-      background: rgba(201,168,76,0.2); border: 1px solid var(--gold);
-      color: var(--gold-light); font-size: 0.75rem; font-weight: 700;
-      letter-spacing: 1.5px; text-transform: uppercase;
-      padding: 0.4rem 1rem; border-radius: 50px;
-      margin-bottom: 1.5rem; position: relative;
+      background: rgba(201, 168, 76, 0.2);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      margin-bottom: 1.5rem;
+      position: relative;
     }
+
     .left-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 900;
-      color: white; line-height: 1.15; margin-bottom: 1.2rem; position: relative;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 900;
+      color: white;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+      position: relative;
     }
-    .left-title em { color: var(--gold-light); font-style: italic; }
-    .left-desc { color: rgba(255,255,255,0.7); font-size: 1rem; line-height: 1.7; margin-bottom: 2.5rem; position: relative; max-width: 380px; }
-    .left-features { display: flex; flex-direction: column; gap: 1rem; position: relative; }
-    .left-feature { display: flex; align-items: center; gap: 0.8rem; }
-    .left-feature-icon { font-size: 1.3rem; }
-    .left-feature-text { color: rgba(255,255,255,0.8); font-size: 0.9rem; }
-    .left-deco { position: absolute; bottom: -20px; right: -20px; font-size: 12rem; opacity: 0.06; line-height: 1; pointer-events: none; }
+
+    .left-title em {
+      color: var(--gold-light);
+      font-style: italic;
+    }
+
+    .left-desc {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      position: relative;
+      max-width: 380px;
+    }
+
+    .left-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .left-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .left-feature-icon {
+      font-size: 1.3rem;
+    }
+
+    .left-feature-text {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+    }
+
+    .left-deco {
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      font-size: 12rem;
+      opacity: 0.06;
+      line-height: 1;
+      pointer-events: none;
+    }
+
     .switch-role {
-      margin-top: 2.5rem; position: relative;
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-      border-radius: var(--radius); padding: 1rem 1.2rem;
-      display: flex; align-items: center; gap: 1rem;
+      margin-top: 2.5rem;
+      position: relative;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius);
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
-    .switch-role p { color: rgba(255,255,255,0.7); font-size: 0.85rem; }
-    .switch-role a { color: var(--gold-light); font-weight: 700; font-size: 0.85rem; }
+
+    .switch-role p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.85rem;
+    }
+
+    .switch-role a {
+      color: var(--gold-light);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
 
     .auth-panel-right {
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      padding: 3rem 2rem; background: white; overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 2rem;
+      background: white;
+      overflow-y: auto;
     }
-    .auth-box { width: 100%; max-width: 420px; }
-    .auth-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; color: var(--green-dark); margin-bottom: 0.2rem; }
-    .auth-logo span { color: var(--green-mid); }
-    .auth-welcome { font-size: 0.88rem; color: var(--text-light); margin-bottom: 2rem; }
 
-    .auth-tabs { display: flex; border-bottom: 2px solid var(--green-pale); margin-bottom: 1.8rem; }
-    .auth-tab { flex: 1; padding: 0.7rem; text-align: center; background: none; border: none; font-size: 0.95rem; font-weight: 600; color: var(--text-light); border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
-    .auth-tab.active { color: var(--earth); border-bottom-color: var(--earth); }
+    .auth-box {
+      width: 100%;
+      max-width: 420px;
+    }
 
-    .form-group { margin-bottom: 1rem; }
-    .form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--green-dark); margin-bottom: 0.4rem; }
-    .form-input { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid var(--green-pale); border-radius: var(--radius-sm); font-size: 0.92rem; font-family: inherit; color: var(--text-dark); background: var(--cream); transition: border-color 0.2s; outline: none; }
-    .form-input:focus { border-color: var(--earth); background: white; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-    .btn-submit { width: 100%; padding: 0.9rem; background: var(--earth); color: white; border: none; border-radius: 50px; font-size: 1rem; font-weight: 700; margin-top: 0.5rem; transition: all 0.2s; }
-    .btn-submit:hover { background: #8b6035; transform: translateY(-1px); }
-    .form-footer { text-align: center; font-size: 0.82rem; color: var(--text-light); margin-top: 1rem; }
-    .form-link { color: var(--earth); font-weight: 600; cursor: pointer; }
-    .error-msg { background: #fde2e2; color: #c0392b; border-radius: var(--radius-sm); padding: 0.7rem 1rem; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
-    .success-msg { background: var(--green-pale); color: var(--green-dark); border-radius: var(--radius-sm); padding: 0.7rem 1rem; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
-    .section-divider { font-size: 0.75rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin: 1.2rem 0 0.8rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--green-pale); }
+    .auth-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--green-dark);
+      margin-bottom: 0.2rem;
+    }
+
+    .auth-logo span {
+      color: var(--green-mid);
+    }
+
+    .auth-welcome {
+      font-size: 0.88rem;
+      color: var(--text-light);
+      margin-bottom: 2rem;
+    }
+
+    .auth-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--green-pale);
+      margin-bottom: 1.8rem;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 0.7rem;
+      text-align: center;
+      background: none;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-light);
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+
+    .auth-tab.active {
+      color: var(--earth);
+      border-bottom-color: var(--earth);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--green-dark);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1.5px solid var(--green-pale);
+      border-radius: var(--radius-sm);
+      font-size: 0.92rem;
+      font-family: inherit;
+      color: var(--text-dark);
+      background: var(--cream);
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--earth);
+      background: white;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--earth);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-submit:hover {
+      background: #8b6035;
+      transform: translateY(-1px);
+    }
+
+    .form-footer {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-light);
+      margin-top: 1rem;
+    }
+
+    .form-link {
+      color: var(--earth);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .error-msg {
+      background: #fde2e2;
+      color: #c0392b;
+      border-radius: var(--radius-sm);
+      padding: 0.7rem 1rem;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .success-msg {
+      background: var(--green-pale);
+      color: var(--green-dark);
+      border-radius: var(--radius-sm);
+      padding: 0.7rem 1rem;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .section-divider {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 1.2rem 0 0.8rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--green-pale);
+    }
 
     @media (max-width: 768px) {
-      .auth-layout { grid-template-columns: 1fr; }
-      .auth-panel-left { display: none; }
-      .auth-panel-right { padding: 2rem 1.5rem; }
+      .auth-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-panel-left {
+        display: none;
+      }
+
+      .auth-panel-right {
+        padding: 2rem 1.5rem;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<nav class="navbar">
-  <a href="index.html" class="navbar-logo">JaFresh <span>Produce</span></a>
-  <div class="navbar-actions">
-    <a href="index.html" style="color:rgba(255,255,255,0.7);font-size:0.9rem">← Back to Home</a>
-  </div>
-</nav>
-
-<div class="auth-layout">
-
-  <!-- LEFT PANEL -->
-  <div class="auth-panel-left">
-    <div class="left-badge">🌾 Farmer Portal</div>
-    <h1 class="left-title">Sell Your <em>Harvest</em><br>Directly to<br>Customers.</h1>
-    <p class="left-desc">Upload your fresh produce and reach hundreds of Jamaican households. No middleman — you set your price, you keep more of what you earn.</p>
-    <div class="left-features">
-      <div class="left-feature">
-        <span class="left-feature-icon">📸</span>
-        <span class="left-feature-text">Upload produce listings with photos & prices</span>
-      </div>
-      <div class="left-feature">
-        <span class="left-feature-icon">💵</span>
-        <span class="left-feature-text">Earn more — only 10% platform commission</span>
-      </div>
-      <div class="left-feature">
-        <span class="left-feature-icon">📊</span>
-        <span class="left-feature-text">Track orders, earnings and stock levels</span>
-      </div>
-      <div class="left-feature">
-        <span class="left-feature-icon">🤝</span>
-        <span class="left-feature-text">Join 85+ verified Jamaican farm partners</span>
-      </div>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-logo">JaFresh <span>Produce</span></a>
+    <div class="navbar-actions">
+      <a href="index.html" style="color:rgba(255,255,255,0.7);font-size:0.9rem">← Back to Home</a>
     </div>
-    <div class="switch-role">
-      <span style="font-size:1.5rem">🛒</span>
-      <div>
-        <p>Looking to buy fresh produce instead?</p>
-        <a href="login-customer.html">Switch to Customer Portal →</a>
+  </nav>
+
+  <div class="auth-layout">
+
+    <!-- LEFT PANEL -->
+    <div class="auth-panel-left">
+      <div class="left-badge">🌾 Farmer Portal</div>
+      <h1 class="left-title">Sell Your <em>Harvest</em><br>Directly to<br>Customers.</h1>
+      <p class="left-desc">Upload your fresh produce and reach hundreds of Jamaican households. No middleman — you set
+        your price, you keep more of what you earn.</p>
+      <div class="left-features">
+        <div class="left-feature">
+          <span class="left-feature-icon">📸</span>
+          <span class="left-feature-text">Upload produce listings with photos & prices</span>
+        </div>
+        <div class="left-feature">
+          <span class="left-feature-icon">💵</span>
+          <span class="left-feature-text">Earn more — only 15% platform commission</span>
+        </div>
+        <div class="left-feature">
+          <span class="left-feature-icon">📊</span>
+          <span class="left-feature-text">Track orders, earnings and stock levels</span>
+        </div>
+        <div class="left-feature">
+          <span class="left-feature-icon">🤝</span>
+          <span class="left-feature-text">Join verified Jamaican farm partners</span>
+        </div>
       </div>
+      <div class="switch-role">
+        <span style="font-size:1.5rem">🛒</span>
+        <div>
+          <p>Looking to buy fresh produce instead?</p>
+          <a href="login-customer.html">Switch to Customer Portal →</a>
+        </div>
+      </div>
+      <div class="left-deco">🌾</div>
     </div>
-    <div class="left-deco">🌾</div>
-  </div>
 
-  <!-- RIGHT PANEL -->
-  <div class="auth-panel-right">
-    <div class="auth-box">
-      <div class="auth-logo">JaFresh <span>Produce</span></div>
-      <div class="auth-welcome">Farmer Portal — Log in or register your farm</div>
+    <!-- RIGHT PANEL -->
+    <div class="auth-panel-right">
+      <div class="auth-box">
+        <div class="auth-logo">JaFresh <span>Produce</span></div>
+        <div class="auth-welcome">Farmer Portal — Log in or register your farm</div>
 
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Log In</button>
-        <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Join as Farmer</button>
-      </div>
-
-      <div id="error-msg" class="error-msg"></div>
-      <div id="success-msg" class="success-msg"></div>
-
-      <!-- LOGIN FORM -->
-      <form id="login-form" onsubmit="handleLogin(event)">
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input type="email" class="form-input" id="login-email" placeholder="your@email.com" required />
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Log In</button>
+          <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Join as Farmer</button>
         </div>
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" class="form-input" id="login-password" placeholder="Your password" required />
-        </div>
-        <button type="submit" class="btn-submit">Log In to Farm Dashboard →</button>
-        <div class="form-footer">
-          New farmer? <span class="form-link" onclick="switchTab('register')">Register your farm free</span>
-        </div>
-      </form>
 
-      <!-- REGISTER FORM -->
-      <form id="register-form" style="display:none" onsubmit="handleRegister(event)">
-        <div class="section-divider">Personal Information</div>
-        <div class="form-row">
+        <div id="error-msg" class="error-msg"></div>
+        <div id="success-msg" class="success-msg"></div>
+
+        <!-- LOGIN FORM -->
+        <form id="login-form" onsubmit="handleLogin(event)">
           <div class="form-group">
-            <label class="form-label">First Name *</label>
-            <input type="text" class="form-input" id="reg-firstname" placeholder="Delroy" required />
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" id="login-email" placeholder="your@email.com" required />
           </div>
           <div class="form-group">
-            <label class="form-label">Last Name *</label>
-            <input type="text" class="form-input" id="reg-lastname" placeholder="Reid" required />
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="login-password" placeholder="Your password" required />
           </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email Address *</label>
-          <input type="email" class="form-input" id="reg-email" placeholder="your@email.com" required />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Phone Number *</label>
-          <input type="tel" class="form-input" id="reg-phone" placeholder="(876)370-3761" required />
-        </div>
+          <button type="submit" class="btn-submit">Log In to Farm Dashboard →</button>
+          <div class="form-footer">
+            New farmer? <span class="form-link" onclick="switchTab('register')">Register your farm free</span>
+          </div>
+        </form>
 
-        <div class="section-divider">Farm Information</div>
-        <div class="form-group">
-          <label class="form-label">Farm Name *</label>
-          <input type="text" class="form-input" id="reg-farmname" placeholder="e.g. Reid Family Farm" required />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Parish (farm location) *</label>
-          <select class="form-input" id="reg-parish" required>
-            <option value="">Select parish</option>
-            <option>Kingston</option><option>St. Andrew</option><option>St. Catherine</option>
-            <option>St. James</option><option>Manchester</option><option>Clarendon</option>
-            <option>St. Elizabeth</option><option>Westmoreland</option><option>Hanover</option>
-            <option>St. Ann</option><option>St. Mary</option><option>Portland</option>
-            <option>St. Thomas</option><option>Trelawny</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">What do you grow?</label>
-          <input type="text" class="form-input" id="reg-crops" placeholder="e.g. Callaloo, Yam, Tomatoes, Herbs" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">About Your Farm</label>
-          <textarea class="form-input" id="reg-bio" rows="2" placeholder="Tell customers about your farm and farming methods…"></textarea>
-        </div>
+        <!-- REGISTER FORM -->
+        <form id="register-form" style="display:none" onsubmit="handleRegister(event)">
+          <div class="section-divider">Personal Information</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name *</label>
+              <input type="text" class="form-input" id="reg-firstname" placeholder="Delroy" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name *</label>
+              <input type="text" class="form-input" id="reg-lastname" placeholder="Reid" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address *</label>
+            <input type="email" class="form-input" id="reg-email" placeholder="your@email.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number *</label>
+            <input type="tel" class="form-input" id="reg-phone" placeholder="(876)370-3761" required />
+          </div>
 
-        <div class="section-divider">Account Security</div>
-        <div class="form-group">
-          <label class="form-label">Password *</label>
-          <input type="password" class="form-input" id="reg-password" placeholder="Create a strong password" required />
-        </div>
+          <div class="section-divider">Farm Information</div>
+          <div class="form-group">
+            <label class="form-label">Farm Name *</label>
+            <input type="text" class="form-input" id="reg-farmname" placeholder="e.g. Reid Family Farm" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Parish (farm location) *</label>
+            <select class="form-input" id="reg-parish" required>
+              <option value="">Select parish</option>
+              <option>Kingston</option>
+              <option>St. Andrew</option>
+              <option>St. Catherine</option>
+              <option>St. James</option>
+              <option>Manchester</option>
+              <option>Clarendon</option>
+              <option>St. Elizabeth</option>
+              <option>Westmoreland</option>
+              <option>Hanover</option>
+              <option>St. Ann</option>
+              <option>St. Mary</option>
+              <option>Portland</option>
+              <option>St. Thomas</option>
+              <option>Trelawny</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">What do you grow?</label>
+            <input type="text" class="form-input" id="reg-crops" placeholder="e.g. Callaloo, Yam, Tomatoes, Herbs" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">About Your Farm</label>
+            <textarea class="form-input" id="reg-bio" rows="2"
+              placeholder="Tell customers about your farm and farming methods…"></textarea>
+          </div>
 
-        <button type="submit" class="btn-submit">Register My Farm 🌾</button>
-        <div class="form-footer">
-          Already registered? <span class="form-link" onclick="switchTab('login')">Log in</span>
-        </div>
-      </form>
+          <div class="section-divider">Account Security</div>
+          <div class="form-group">
+            <label class="form-label">Password *</label>
+            <input type="password" class="form-input" id="reg-password" placeholder="Create a strong password"
+              required />
+          </div>
 
+          <button type="submit" class="btn-submit">Register My Farm 🌾</button>
+          <div class="form-footer">
+            Already registered? <span class="form-link" onclick="switchTab('login')">Log in</span>
+          </div>
+        </form>
+
+      </div>
     </div>
+
   </div>
 
-</div>
+  <script src="js/db.js"></script>
+  <script>
+    DB.init();
 
-<script src="js/db.js"></script>
-<script>
-  DB.init();
+    // ── PHONE FORMATTING ──────────────────────────
+    function formatPhone(input) {
+      let val = input.value.replace(/\D/g, '');
+      if (val.length > 10) val = val.slice(0, 10);
+      if (val.length >= 7) val = `(${val.slice(0, 3)})${val.slice(3, 6)}-${val.slice(6)}`;
+      else if (val.length >= 4) val = `(${val.slice(0, 3)})${val.slice(3)}`;
+      else if (val.length > 0) val = `(${val}`;
+      input.value = val;
+    }
 
-  // ── PHONE FORMATTING ──────────────────────────
-  function formatPhone(input) {
-    let val = input.value.replace(/\D/g, '');
-    if (val.length > 10) val = val.slice(0, 10);
-    if (val.length >= 7)      val = `(${val.slice(0,3)})${val.slice(3,6)}-${val.slice(6)}`;
-    else if (val.length >= 4) val = `(${val.slice(0,3)})${val.slice(3)}`;
-    else if (val.length > 0)  val = `(${val}`;
-    input.value = val;
-  }
+    function validatePhone(phone) {
+      return /^\(\d{3}\)\d{3}-\d{4}$/.test(phone);
+    }
 
-  function validatePhone(phone) {
-    return /^\(\d{3}\)\d{3}-\d{4}$/.test(phone);
-  }
+    document.getElementById('reg-phone').addEventListener('input', function () { formatPhone(this); });
 
-  document.getElementById('reg-phone').addEventListener('input', function() { formatPhone(this); });
+    const user = DB.getCurrentUser();
+    if (user && user.role === 'farmer') window.location.href = window.location.href.replace(/[^/]*$/, 'dashboard-farmer.html');
 
-  const user = DB.getCurrentUser();
-  if (user && user.role === 'farmer') window.location.href = window.location.href.replace(/[^/]*$/, 'dashboard-farmer.html');
+    function switchTab(tab) {
+      document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+      clearMessages();
+    }
 
-  function switchTab(tab) {
-    document.getElementById('login-form').style.display    = tab === 'login'    ? 'block' : 'none';
-    document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
-    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-    document.getElementById('tab-register').classList.toggle('active', tab === 'register');
-    clearMessages();
-  }
+    function showError(msg) { const el = document.getElementById('error-msg'); el.textContent = msg; el.style.display = 'block'; document.getElementById('success-msg').style.display = 'none'; }
+    function showSuccess(msg) { const el = document.getElementById('success-msg'); el.textContent = msg; el.style.display = 'block'; document.getElementById('error-msg').style.display = 'none'; }
+    function clearMessages() { document.getElementById('error-msg').style.display = 'none'; document.getElementById('success-msg').style.display = 'none'; }
 
-  function showError(msg) { const el = document.getElementById('error-msg'); el.textContent = msg; el.style.display = 'block'; document.getElementById('success-msg').style.display = 'none'; }
-  function showSuccess(msg) { const el = document.getElementById('success-msg'); el.textContent = msg; el.style.display = 'block'; document.getElementById('error-msg').style.display = 'none'; }
-  function clearMessages() { document.getElementById('error-msg').style.display = 'none'; document.getElementById('success-msg').style.display = 'none'; }
+    function handleLogin(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
 
-  function handleLogin(e) {
-    e.preventDefault();
-    const btn      = e.target.querySelector('button[type=submit]');
-    const email    = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value;
+      if (!email || !password) { showError('Please enter your email and password.'); return; }
 
-    if (!email || !password) { showError('Please enter your email and password.'); return; }
+      btn.textContent = 'Logging in…'; btn.disabled = true;
+      setTimeout(() => {
+        const result = DB.login(email, password, 'farmer');
+        if (result.success) {
+          DB.setCurrentUser(result.user);
+          showSuccess('✅ Welcome back! Redirecting to your dashboard…');
+          setTimeout(() => window.location.href = window.location.href.replace(/[^/]*$/, 'dashboard-farmer.html'), 800);
+        } else {
+          showError('❌ ' + result.message);
+          btn.textContent = 'Log In to Farm Dashboard →'; btn.disabled = false;
+        }
+      }, 400);
+    }
 
-    btn.textContent = 'Logging in…'; btn.disabled = true;
-    setTimeout(() => {
-      const result = DB.login(email, password, 'farmer');
-      if (result.success) {
-        DB.setCurrentUser(result.user);
-        showSuccess('✅ Welcome back! Redirecting to your dashboard…');
-        setTimeout(() => window.location.href = window.location.href.replace(/[^/]*$/, 'dashboard-farmer.html'), 800);
-      } else {
-        showError('❌ ' + result.message);
-        btn.textContent = 'Log In to Farm Dashboard →'; btn.disabled = false;
-      }
-    }, 400);
-  }
+    function handleRegister(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      const firstName = document.getElementById('reg-firstname').value.trim();
+      const lastName = document.getElementById('reg-lastname').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const farmName = document.getElementById('reg-farmname').value.trim();
+      const parish = document.getElementById('reg-parish').value;
+      const password = document.getElementById('reg-password').value;
 
-  function handleRegister(e) {
-    e.preventDefault();
-    const btn       = e.target.querySelector('button[type=submit]');
-    const firstName = document.getElementById('reg-firstname').value.trim();
-    const lastName  = document.getElementById('reg-lastname').value.trim();
-    const email     = document.getElementById('reg-email').value.trim();
-    const phone     = document.getElementById('reg-phone').value.trim();
-    const farmName  = document.getElementById('reg-farmname').value.trim();
-    const parish    = document.getElementById('reg-parish').value;
-    const password  = document.getElementById('reg-password').value;
+      if (!firstName || !lastName) { showError('Please enter your full name.'); return; }
+      if (!email) { showError('Please enter a valid email address.'); return; }
+      if (!phone) { showError('Please enter your phone number.'); return; }
+      if (!validatePhone(phone)) { showError('Please enter phone in format (876)370-3761.'); return; }
+      if (!farmName) { showError('Please enter your farm name.'); return; }
+      if (!parish) { showError('Please select your parish.'); return; }
+      if (password.length < 6) { showError('Password must be at least 6 characters.'); return; }
 
-    if (!firstName || !lastName)  { showError('Please enter your full name.'); return; }
-    if (!email)                   { showError('Please enter a valid email address.'); return; }
-    if (!phone)                   { showError('Please enter your phone number.'); return; }
-    if (!validatePhone(phone))    { showError('Please enter phone in format (876)370-3761.'); return; }
-    if (!farmName)                { showError('Please enter your farm name.'); return; }
-    if (!parish)                  { showError('Please select your parish.'); return; }
-    if (password.length < 6)      { showError('Password must be at least 6 characters.'); return; }
-
-    btn.textContent = 'Registering farm…'; btn.disabled = true;
-    setTimeout(() => {
-      const result = DB.register({
-        role: 'farmer', firstName, lastName, email, phone, farmName, parish,
-        crops: document.getElementById('reg-crops').value,
-        bio:   document.getElementById('reg-bio').value,
-        password,
-      });
-      if (result.success) {
-        DB.setCurrentUser(result.user);
-        showSuccess('✅ Farm registered! Redirecting to your dashboard…');
-        setTimeout(() => window.location.href = window.location.href.replace(/[^/]*$/, 'dashboard-farmer.html'), 800);
-      } else {
-        showError('❌ ' + result.message);
-        btn.textContent = 'Register My Farm 🌾'; btn.disabled = false;
-      }
-    }, 400);
-  }
-</script>
+      btn.textContent = 'Registering farm…'; btn.disabled = true;
+      setTimeout(() => {
+        const result = DB.register({
+          role: 'farmer', firstName, lastName, email, phone, farmName, parish,
+          crops: document.getElementById('reg-crops').value,
+          bio: document.getElementById('reg-bio').value,
+          password,
+        });
+        if (result.success) {
+          DB.setCurrentUser(result.user);
+          showSuccess('✅ Farm registered! Redirecting to your dashboard…');
+          setTimeout(() => window.location.href = window.location.href.replace(/[^/]*$/, 'dashboard-farmer.html'), 800);
+        } else {
+          showError('❌ ' + result.message);
+          btn.textContent = 'Register My Farm 🌾'; btn.disabled = false;
+        }
+      }, 400);
+    }
+  </script>
 </body>
+
 </html>

@@ -1,570 +1,1173 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Farmer Dashboard — JaFresh Produce</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>" />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>" />
   <link rel="stylesheet" href="css/styles.css" />
   <style>
-    body { background: var(--cream); }
+    body {
+      background: var(--cream);
+    }
 
-    .dash-navbar { position: sticky; top: 0; z-index: 1000; background: linear-gradient(90deg, #3d2010, #5c3318); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; padding: 0 5%; height: 70px; box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
-    .dash-navbar-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--gold); }
-    .dash-navbar-logo span { color: var(--gold-light); }
-    .dash-navbar-right { display: flex; align-items: center; gap: 1rem; }
-    .user-chip { display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); border-radius: 50px; padding: 0.4rem 1rem; color: white; font-size: 0.88rem; }
-    .user-chip-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: var(--green-dark); }
-    .btn-sm-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.3); color: white; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+    .dash-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: linear-gradient(90deg, #3d2010, #5c3318);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      height: 70px;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+    }
 
-    .dash-layout { display: grid; grid-template-columns: 240px 1fr; min-height: calc(100vh - 70px); }
+    .dash-navbar-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--gold);
+    }
 
-    .dash-sidebar { background: white; border-right: 1px solid var(--green-pale); padding: 2rem 0; position: sticky; top: 70px; height: calc(100vh - 70px); overflow-y: auto; }
-    .sidebar-section { margin-bottom: 2rem; }
-    .sidebar-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-light); padding: 0 1.5rem; margin-bottom: 0.5rem; }
-    .sidebar-link { display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1.5rem; color: var(--text-mid); font-size: 0.9rem; font-weight: 500; transition: all 0.15s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
-    .sidebar-link:hover { background: #fdf3e7; color: var(--earth); }
-    .sidebar-link.active { background: #fdf3e7; color: var(--earth); font-weight: 700; border-right: 3px solid var(--earth); }
-    .sidebar-link-icon { font-size: 1.1rem; }
+    .dash-navbar-logo span {
+      color: var(--gold-light);
+    }
 
-    .dash-main { padding: 2rem 2.5rem; }
-    .page-section { display: none; }
-    .page-section.active { display: block; }
+    .dash-navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
 
-    .page-header { margin-bottom: 1.5rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-    .page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 800; color: var(--green-dark); }
-    .page-subtitle { color: var(--text-light); font-size: 0.9rem; margin-top: 0.3rem; }
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50px;
+      padding: 0.4rem 1rem;
+      color: white;
+      font-size: 0.88rem;
+    }
 
-    .btn-primary-gold { background: var(--gold); color: var(--green-dark); border: none; padding: 0.7rem 1.4rem; border-radius: 50px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
-    .btn-primary-gold:hover { background: var(--gold-light); }
+    .user-chip-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--green-dark);
+    }
 
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .stat-card { background: white; border-radius: var(--radius); padding: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .stat-card-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
-    .stat-card-label { font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.2rem; }
-    .stat-card-value { font-size: 1.6rem; font-weight: 800; color: var(--green-dark); }
+    .btn-sm-outline {
+      background: transparent;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .dash-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: calc(100vh - 70px);
+    }
+
+    .dash-sidebar {
+      background: white;
+      border-right: 1px solid var(--green-pale);
+      padding: 2rem 0;
+      position: sticky;
+      top: 70px;
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+    }
+
+    .sidebar-section {
+      margin-bottom: 2rem;
+    }
+
+    .sidebar-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-light);
+      padding: 0 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.7rem 1.5rem;
+      color: var(--text-mid);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.15s;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .sidebar-link:hover {
+      background: #fdf3e7;
+      color: var(--earth);
+    }
+
+    .sidebar-link.active {
+      background: #fdf3e7;
+      color: var(--earth);
+      font-weight: 700;
+      border-right: 3px solid var(--earth);
+    }
+
+    .sidebar-link-icon {
+      font-size: 1.1rem;
+    }
+
+    .dash-main {
+      padding: 2rem 2.5rem;
+    }
+
+    .page-section {
+      display: none;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    .page-header {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--green-dark);
+    }
+
+    .page-subtitle {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+    }
+
+    .btn-primary-gold {
+      background: var(--gold);
+      color: var(--green-dark);
+      border: none;
+      padding: 0.7rem 1.4rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary-gold:hover {
+      background: var(--gold-light);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.3rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-card-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-card-label {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-card-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--green-dark);
+    }
 
     /* LISTINGS */
-    .listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.2rem; }
-    .listing-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: transform 0.2s; }
-    .listing-card:hover { transform: translateY(-3px); }
-    .listing-card-img { height: 140px; background: linear-gradient(135deg, #fdf3e7, #f0d080); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; position: relative; }
-    .listing-status-badge { position: absolute; top: 0.6rem; right: 0.6rem; padding: 0.2rem 0.6rem; border-radius: 50px; font-size: 0.7rem; font-weight: 700; }
-    .status-active { background: var(--green-pale); color: var(--green-mid); }
-    .status-outofstock { background: #fde2e2; color: #c0392b; }
-    .listing-card-body { padding: 1rem; }
-    .listing-card-name { font-weight: 700; color: var(--green-dark); margin-bottom: 0.2rem; }
-    .listing-card-meta { font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.6rem; }
-    .listing-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.8rem; }
-    .listing-price { font-size: 1.1rem; font-weight: 800; color: var(--earth); }
-    .listing-actions { display: flex; gap: 0.4rem; }
-    .btn-edit { background: var(--cream); border: 1.5px solid var(--green-pale); color: var(--green-dark); padding: 0.35rem 0.8rem; border-radius: 50px; font-size: 0.78rem; cursor: pointer; }
-    .btn-delete { background: #fde2e2; border: none; color: #c0392b; padding: 0.35rem 0.7rem; border-radius: 50px; font-size: 0.78rem; cursor: pointer; }
+    .listings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .listing-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s;
+    }
+
+    .listing-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .listing-card-img {
+      height: 140px;
+      background: linear-gradient(135deg, #fdf3e7, #f0d080);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      position: relative;
+    }
+
+    .listing-status-badge {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .status-active {
+      background: var(--green-pale);
+      color: var(--green-mid);
+    }
+
+    .status-outofstock {
+      background: #fde2e2;
+      color: #c0392b;
+    }
+
+    .listing-card-body {
+      padding: 1rem;
+    }
+
+    .listing-card-name {
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 0.2rem;
+    }
+
+    .listing-card-meta {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      margin-bottom: 0.6rem;
+    }
+
+    .listing-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.8rem;
+    }
+
+    .listing-price {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--earth);
+    }
+
+    .listing-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .btn-edit {
+      background: var(--cream);
+      border: 1.5px solid var(--green-pale);
+      color: var(--green-dark);
+      padding: 0.35rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+
+    .btn-delete {
+      background: #fde2e2;
+      border: none;
+      color: #c0392b;
+      padding: 0.35rem 0.7rem;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
 
     /* UPLOAD FORM */
-    .upload-card { background: white; border-radius: var(--radius); padding: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); max-width: 600px; }
-    .upload-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 800; color: var(--green-dark); margin-bottom: 1.5rem; }
-    .form-group { margin-bottom: 1rem; }
-    .form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--green-dark); margin-bottom: 0.4rem; }
-    .form-input { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid var(--green-pale); border-radius: var(--radius-sm); font-size: 0.92rem; font-family: inherit; color: var(--text-dark); background: var(--cream); transition: border-color 0.2s; outline: none; }
-    .form-input:focus { border-color: var(--earth); background: white; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-    .emoji-picker { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .upload-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      max-width: 600px;
+    }
 
-    .btn-upload { background: var(--earth); color: white; border: none; padding: 0.9rem 2rem; border-radius: 50px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
-    .btn-upload:hover { background: #8b6035; }
+    .upload-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--green-dark);
+      margin-bottom: 1.5rem;
+    }
 
-    /* ORDERS TABLE */
-    .orders-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-    .orders-table th { background: var(--earth); color: white; padding: 0.8rem 1rem; text-align: left; font-size: 0.82rem; }
-    .orders-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--green-pale); font-size: 0.85rem; }
-    .status-badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 50px; font-size: 0.72rem; font-weight: 700; }
-    .status-delivered { background: #d8f3dc; color: #2d6a4f; }
-    .status-processing { background: #fff3cd; color: #856404; }
-    .status-preparing { background: #e8f4fd; color: #1a6fa8; }
-    .status-dispatched { background: #f3e8fd; color: #6a1ab8; }
-    .status-pending { background: #fde2e2; color: #c0392b; }
+    .form-group {
+      margin-bottom: 1rem;
+    }
 
-    .status-select {
-      padding: 0.35rem 0.6rem; border-radius: var(--radius-sm);
-      border: 1.5px solid var(--green-pale); background: var(--cream);
-      font-size: 0.78rem; font-family: inherit; cursor: pointer;
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--green-dark);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1.5px solid var(--green-pale);
+      border-radius: var(--radius-sm);
+      font-size: 0.92rem;
+      font-family: inherit;
+      color: var(--text-dark);
+      background: var(--cream);
+      transition: border-color 0.2s;
       outline: none;
     }
-    .status-select:focus { border-color: var(--earth); }
-    .btn-update-status {
-      background: var(--earth); color: white;
-      border: none; padding: 0.35rem 0.8rem;
-      border-radius: 50px; font-size: 0.75rem;
-      font-weight: 700; cursor: pointer;
-      transition: all 0.15s; white-space: nowrap;
+
+    .form-input:focus {
+      border-color: var(--earth);
+      background: white;
     }
-    .btn-update-status:hover { background: #8b6035; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+
+    .emoji-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn-upload {
+      background: var(--earth);
+      color: white;
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-upload:hover {
+      background: #8b6035;
+    }
+
+    /* ORDERS TABLE */
+    .orders-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .orders-table th {
+      background: var(--earth);
+      color: white;
+      padding: 0.8rem 1rem;
+      text-align: left;
+      font-size: 0.82rem;
+    }
+
+    .orders-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--green-pale);
+      font-size: 0.85rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 50px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .status-delivered {
+      background: #d8f3dc;
+      color: #2d6a4f;
+    }
+
+    .status-processing {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-preparing {
+      background: #e8f4fd;
+      color: #1a6fa8;
+    }
+
+    .status-dispatched {
+      background: #f3e8fd;
+      color: #6a1ab8;
+    }
+
+    .status-pending {
+      background: #fde2e2;
+      color: #c0392b;
+    }
+
+    .status-select {
+      padding: 0.35rem 0.6rem;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--green-pale);
+      background: var(--cream);
+      font-size: 0.78rem;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .status-select:focus {
+      border-color: var(--earth);
+    }
+
+    .btn-update-status {
+      background: var(--earth);
+      color: white;
+      border: none;
+      padding: 0.35rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-update-status:hover {
+      background: #8b6035;
+    }
 
     /* PROFILE */
-    .profile-card { background: white; border-radius: var(--radius); padding: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); max-width: 520px; }
-    .farm-avatar { width: 80px; height: 80px; border-radius: 50%; background: #fdf3e7; border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 1rem; }
-    .btn-save { background: var(--earth); color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 50px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+    .profile-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      max-width: 520px;
+    }
+
+    .farm-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #fdf3e7;
+      border: 3px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn-save {
+      background: var(--earth);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
 
     /* MODAL */
-    .modal-overlay { position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 1rem; }
-    .modal-overlay.active { display: flex; }
-    .modal { background: white; border-radius: 20px; width: 100%; max-width: 480px; padding: 2.5rem; position: relative; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s ease; }
-    @keyframes modalIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
-    .modal-close { position: absolute; top: 1rem; right: 1rem; background: var(--cream); border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1rem; cursor: pointer; }
-    .modal-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 800; color: var(--green-dark); margin-bottom: 1.5rem; }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 480px;
+      padding: 2.5rem;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--cream);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--green-dark);
+      margin-bottom: 1.5rem;
+    }
 
     /* TOAST */
-    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--green-dark); color: white; padding: 0.8rem 1.8rem; border-radius: 50px; font-size: 0.88rem; font-weight: 600; z-index: 5000; transition: transform 0.3s; white-space: nowrap; }
-    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--green-dark);
+      color: white;
+      padding: 0.8rem 1.8rem;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      z-index: 5000;
+      transition: transform 0.3s;
+      white-space: nowrap;
+    }
 
-    .section-title-sm { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 800; color: var(--green-dark); margin-bottom: 1rem; }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
 
-    .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-light); }
-    .empty-state-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .section-title-sm {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--green-dark);
+      margin-bottom: 1rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-light);
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
 
     @media (max-width: 900px) {
-      .dash-layout { grid-template-columns: 1fr; }
-      .dash-sidebar { display: none; }
-      .dash-main { padding: 1.5rem; }
+      .dash-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .dash-sidebar {
+        display: none;
+      }
+
+      .dash-main {
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<!-- NAVBAR -->
-<nav class="dash-navbar">
-  <div class="dash-navbar-logo">JaFresh <span>Produce</span> <span style="font-size:0.7rem;color:rgba(255,255,255,0.5);font-family:'DM Sans',sans-serif;font-weight:400;margin-left:0.5rem">· Farmer Portal</span></div>
-  <div class="dash-navbar-right">
-    <div class="user-chip">
-      <div class="user-chip-avatar">🌾</div>
-      <span id="nav-farmname">My Farm</span>
+  <!-- NAVBAR -->
+  <nav class="dash-navbar">
+    <div class="dash-navbar-logo">JaFresh <span>Produce</span> <span
+        style="font-size:0.7rem;color:rgba(255,255,255,0.5);font-family:'DM Sans',sans-serif;font-weight:400;margin-left:0.5rem">·
+        Farmer Portal</span></div>
+    <div class="dash-navbar-right">
+      <div class="user-chip">
+        <div class="user-chip-avatar">🌾</div>
+        <span id="nav-farmname">My Farm</span>
+      </div>
+      <button class="btn-sm-outline" onclick="handleLogout()">Log Out</button>
     </div>
-    <button class="btn-sm-outline" onclick="handleLogout()">Log Out</button>
-  </div>
-</nav>
+  </nav>
 
-<div class="dash-layout">
+  <div class="dash-layout">
 
-  <!-- SIDEBAR -->
-  <aside class="dash-sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-label">My Farm</div>
-      <button class="sidebar-link active" onclick="showSection('overview', this)">
-        <span class="sidebar-link-icon">📊</span> Overview
-      </button>
-      <button class="sidebar-link" onclick="showSection('listings', this)">
-        <span class="sidebar-link-icon">🌱</span> My Listings
-      </button>
-      <button class="sidebar-link" onclick="showSection('upload', this)">
-        <span class="sidebar-link-icon">📸</span> Upload Produce
-      </button>
-      <button class="sidebar-link" onclick="showSection('orders', this)">
-        <span class="sidebar-link-icon">📋</span> Incoming Orders
-      </button>
-      <button class="sidebar-link" onclick="showSection('earnings', this)">
-        <span class="sidebar-link-icon">💰</span> Earnings
-      </button>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">Account</div>
-      <button class="sidebar-link" onclick="showSection('profile', this)">
-        <span class="sidebar-link-icon">👤</span> Farm Profile
-      </button>
-      <button class="sidebar-link" onclick="handleLogout()">
-        <span class="sidebar-link-icon">🚪</span> Log Out
-      </button>
-    </div>
-  </aside>
+    <!-- SIDEBAR -->
+    <aside class="dash-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">My Farm</div>
+        <button class="sidebar-link active" onclick="showSection('overview', this)">
+          <span class="sidebar-link-icon">📊</span> Overview
+        </button>
+        <button class="sidebar-link" onclick="showSection('listings', this)">
+          <span class="sidebar-link-icon">🌱</span> My Listings
+        </button>
+        <button class="sidebar-link" onclick="showSection('upload', this)">
+          <span class="sidebar-link-icon">📸</span> Upload Produce
+        </button>
+        <button class="sidebar-link" onclick="showSection('orders', this)">
+          <span class="sidebar-link-icon">📋</span> Incoming Orders
+        </button>
+        <button class="sidebar-link" onclick="showSection('earnings', this)">
+          <span class="sidebar-link-icon">💰</span> Earnings
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Account</div>
+        <button class="sidebar-link" onclick="showSection('profile', this)">
+          <span class="sidebar-link-icon">👤</span> Farm Profile
+        </button>
+        <button class="sidebar-link" onclick="handleLogout()">
+          <span class="sidebar-link-icon">🚪</span> Log Out
+        </button>
+      </div>
+    </aside>
 
-  <!-- MAIN -->
-  <main class="dash-main">
+    <!-- MAIN -->
+    <main class="dash-main">
 
-    <!-- OVERVIEW -->
-    <div class="page-section active" id="section-overview">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Welcome back, <span id="farmer-firstname">Farmer</span>! 🌾</div>
-          <div class="page-subtitle">Here's how your farm is performing on JaFresh Produce</div>
+      <!-- OVERVIEW -->
+      <div class="page-section active" id="section-overview">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Welcome back, <span id="farmer-firstname">Farmer</span>! 🌾</div>
+            <div class="page-subtitle">Here's how your farm is performing on JaFresh Produce</div>
+          </div>
         </div>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-card-icon">🌱</div><div class="stat-card-label">Active Listings</div><div class="stat-card-value" id="stat-listings">0</div></div>
-        <div class="stat-card"><div class="stat-card-icon">💵</div><div class="stat-card-label">Net Earnings (after 15% fee)</div><div class="stat-card-value" id="stat-earnings">J$0</div></div>
-        <div class="stat-card"><div class="stat-card-icon">📦</div><div class="stat-card-label">Orders This Week</div><div class="stat-card-value" id="stat-orders-week">0</div></div>
-        <div class="stat-card"><div class="stat-card-icon">⭐</div><div class="stat-card-label">Customer Rating</div><div class="stat-card-value">4.9</div></div>
-      </div>
-
-      <div class="section-title-sm">Recent Orders</div>
-      <table class="orders-table" style="margin-bottom:2rem">
-        <thead><tr><th>Order ID</th><th>Date</th><th>Customer</th><th>Items</th><th>Amount</th><th>Status</th></tr></thead>
-        <tbody id="overview-orders-tbody"></tbody>
-      </table>
-
-      <div class="section-title-sm">My Recent Listings</div>
-      <div class="listings-grid" id="overview-listings-grid"></div>
-    </div>
-
-    <!-- MY LISTINGS -->
-    <div class="page-section" id="section-listings">
-      <div class="page-header">
-        <div>
-          <div class="page-title">My Listings 🌱</div>
-          <div class="page-subtitle">All your produce listed on JaFresh Produce</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-icon">🌱</div>
+            <div class="stat-card-label">Active Listings</div>
+            <div class="stat-card-value" id="stat-listings">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">💵</div>
+            <div class="stat-card-label">Net Earnings (after 15% fee)</div>
+            <div class="stat-card-value" id="stat-earnings">J$0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">📦</div>
+            <div class="stat-card-label">Orders This Week</div>
+            <div class="stat-card-value" id="stat-orders-week">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">⭐</div>
+            <div class="stat-card-label">Customer Rating</div>
+            <div class="stat-card-value">4.9</div>
+          </div>
         </div>
-        <button class="btn-primary-gold" onclick="showSection('upload', document.querySelector('[onclick*=upload]'))">+ Upload New Produce</button>
-      </div>
-      <div class="listings-grid" id="listings-grid"></div>
-    </div>
 
-    <!-- UPLOAD PRODUCE -->
-    <div class="page-section" id="section-upload">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Upload Produce 📸</div>
-          <div class="page-subtitle">Add a new product listing for customers to see and buy</div>
-        </div>
-      </div>
-      <div class="upload-card">
-        <form id="upload-form" onsubmit="handleUpload(event)">
-          <div class="form-group">
-            <label class="form-label">Produce Name *</label>
-            <input type="text" class="form-input" id="up-name" placeholder="e.g. Fresh Callaloo Bunch" required />
-          </div>
-
-          <!-- IMAGE UPLOAD -->
-          <div class="form-group">
-            <label class="form-label">Product Image *</label>
-            <div id="image-upload-area" style="border:2px dashed var(--green-pale);border-radius:var(--radius-sm);padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cream)" onclick="document.getElementById('up-image-input').click()">
-              <div id="image-preview" style="display:none;margin-bottom:0.8rem">
-                <img id="preview-img" src="" alt="Preview" style="max-height:160px;max-width:100%;border-radius:var(--radius-sm);object-fit:cover" />
-              </div>
-              <div id="image-placeholder">
-                <div style="font-size:2.5rem;margin-bottom:0.5rem">📸</div>
-                <div style="font-size:0.88rem;color:var(--text-mid);font-weight:600">Click to upload a photo</div>
-                <div style="font-size:0.75rem;color:var(--text-light);margin-top:0.3rem">JPG, PNG, WEBP — max 5MB</div>
-              </div>
-            </div>
-            <input type="file" id="up-image-input" accept="image/*" style="display:none" onchange="previewImage(event)" />
-            <small style="color:var(--text-light);font-size:0.75rem">If no image uploaded, a default icon will be used instead</small>
-          </div>
-
-          <input type="hidden" id="up-emoji" value="🌿" />
-
-          <div class="form-group">
-            <label class="form-label">Category *</label>
-            <select class="form-input" id="up-category" required>
-              <option value="">Select category</option>
-              <option value="vegetables">Vegetables</option>
-              <option value="fruits">Fruits</option>
-              <option value="herbs">Herbs & Seasonings</option>
-              <option value="provisions">Provisions & Ground Food</option>
-              <option value="boxes">Produce Boxes</option>
-              <option value="gifts">Gift Items</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Description * <small style="color:var(--text-light)">(min 100 words)</small></label>
-            <textarea class="form-input" id="up-description" rows="4" placeholder="Describe your produce — where it's grown, how it's farmed, what's included, freshness guarantee, and why customers should buy it…" required></textarea>
-            <small style="color:var(--text-light);font-size:0.78rem">Word count: <span id="word-count">0</span></small>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Price (J$) *</label>
-              <input type="number" class="form-input" id="up-price" placeholder="e.g. 800" min="1" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Price Unit</label>
-              <select class="form-input" id="up-unit">
-                <option value="/week">/week</option>
-                <option value="/bunch">/bunch</option>
-                <option value="/kg">/kg</option>
-                <option value="/lb">/lb</option>
-                <option value="/pack">/pack</option>
-                <option value="/box">/box</option>
-                <option value="/dozen">/dozen</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Stock Available *</label>
-              <input type="number" class="form-input" id="up-stock" placeholder="e.g. 50" min="1" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Harvest Day</label>
-              <select class="form-input" id="up-harvest">
-                <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
-                <option>Thursday</option><option>Friday</option><option>Saturday</option>
-              </select>
-            </div>
-          </div>
-
-          <button type="submit" class="btn-upload">📸 Upload Listing</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- ORDERS -->
-    <div class="page-section" id="section-orders">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Incoming Orders 📋</div>
-          <div class="page-subtitle">Manage customer orders and update their status</div>
-        </div>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-card-icon">⏳</div><div class="stat-card-label">Pending</div><div class="stat-card-value" id="stat-pending">0</div></div>
-        <div class="stat-card"><div class="stat-card-icon">👨‍🍳</div><div class="stat-card-label">Preparing</div><div class="stat-card-value" id="stat-preparing">0</div></div>
-        <div class="stat-card"><div class="stat-card-icon">🚚</div><div class="stat-card-label">Dispatched</div><div class="stat-card-value" id="stat-dispatched">0</div></div>
-        <div class="stat-card"><div class="stat-card-icon">✅</div><div class="stat-card-label">Delivered</div><div class="stat-card-value" id="stat-delivered">0</div></div>
-      </div>
-
-      <div style="overflow-x:auto">
-        <table class="orders-table">
+        <div class="section-title-sm">Recent Orders</div>
+        <table class="orders-table" style="margin-bottom:2rem">
           <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Date</th>
-            <th>Customer</th>
-            <th>Items Ordered</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Update Status</th>
-          </tr>
-          </thead>
-          <tbody id="orders-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- EARNINGS -->
-    <div class="page-section" id="section-earnings">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Earnings 💰</div>
-          <div class="page-subtitle">Your sales breakdown and JaFresh platform commission</div>
-        </div>
-      </div>
-
-      <!-- Commission Explanation Banner -->
-      <div style="background:linear-gradient(135deg,#1a3a2a,#2d6a4f);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
-        <div style="font-size:2.5rem">🤝</div>
-        <div>
-          <div style="color:#c9a84c;font-weight:800;font-size:1.1rem;margin-bottom:0.3rem">JaFresh Platform Commission — 15%</div>
-          <div style="color:#a8d5b5;font-size:0.88rem;line-height:1.6">JaFresh Produce charges a 15% commission on all sales to cover technology, delivery coordination, marketing, and customer support. You keep <strong style="color:white">85% of every sale</strong>.</div>
-        </div>
-      </div>
-
-      <!-- Earnings Breakdown Cards -->
-      <div class="stats-grid" style="margin-bottom:2rem">
-        <div class="stat-card">
-          <div class="stat-card-icon">🛒</div>
-          <div class="stat-card-label">Gross Sales</div>
-          <div class="stat-card-value" id="earn-gross">J$0</div>
-          <div style="font-size:0.72rem;color:var(--text-light);margin-top:4px">Total customer payments</div>
-        </div>
-        <div class="stat-card" style="border:2px solid #fde2e2">
-          <div class="stat-card-icon">📊</div>
-          <div class="stat-card-label">JaFresh Commission (15%)</div>
-          <div class="stat-card-value" id="earn-commission" style="color:#c0392b">J$0</div>
-          <div style="font-size:0.72rem;color:var(--text-light);margin-top:4px">Platform fee deducted</div>
-        </div>
-        <div class="stat-card" style="border:2px solid #d8f3dc">
-          <div class="stat-card-icon">💵</div>
-          <div class="stat-card-label">Your Net Earnings (85%)</div>
-          <div class="stat-card-value" id="earn-net" style="color:var(--green-mid)">J$0</div>
-          <div style="font-size:0.72rem;color:var(--text-light);margin-top:4px">Paid to you within 3 days</div>
-        </div>
-      </div>
-
-      <!-- Visual Split Bar -->
-      <div style="background:white;border-radius:var(--radius);padding:1.5rem;margin-bottom:2rem;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
-        <div style="font-weight:700;color:var(--green-dark);margin-bottom:1rem">Revenue Split Per Sale</div>
-        <div style="border-radius:50px;overflow:hidden;height:36px;display:flex;font-size:0.8rem;font-weight:700">
-          <div id="earn-bar-farmer" style="width:85%;background:#2d6a4f;display:flex;align-items:center;justify-content:center;color:white;transition:width 1s ease">
-            You — 85%
-          </div>
-          <div style="width:15%;background:#c0392b;display:flex;align-items:center;justify-content:center;color:white">
-            JaFresh — 15%
-          </div>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-top:0.8rem;font-size:0.8rem;color:var(--text-mid)">
-          <span>🟢 Your earnings — paid within 3 business days of delivery</span>
-          <span>🔴 JaFresh platform fee</span>
-        </div>
-      </div>
-
-      <!-- Per Order Breakdown Table -->
-      <div style="background:white;border-radius:var(--radius);padding:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
-        <div style="font-weight:700;color:var(--green-dark);margin-bottom:1rem">Order Earnings Breakdown</div>
-        <div style="overflow-x:auto">
-          <table class="orders-table">
-            <thead>
             <tr>
               <th>Order ID</th>
               <th>Date</th>
-              <th>Gross Sale</th>
-              <th>Commission (15%)</th>
-              <th>Your Net (85%)</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Amount</th>
               <th>Status</th>
             </tr>
+          </thead>
+          <tbody id="overview-orders-tbody"></tbody>
+        </table>
+
+        <div class="section-title-sm">My Recent Listings</div>
+        <div class="listings-grid" id="overview-listings-grid"></div>
+      </div>
+
+      <!-- MY LISTINGS -->
+      <div class="page-section" id="section-listings">
+        <div class="page-header">
+          <div>
+            <div class="page-title">My Listings 🌱</div>
+            <div class="page-subtitle">All your produce listed on JaFresh Produce</div>
+          </div>
+          <button class="btn-primary-gold"
+            onclick="showSection('upload', document.querySelector('[onclick*=upload]'))">+ Upload New Produce</button>
+        </div>
+        <div class="listings-grid" id="listings-grid"></div>
+      </div>
+
+      <!-- UPLOAD PRODUCE -->
+      <div class="page-section" id="section-upload">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Upload Produce 📸</div>
+            <div class="page-subtitle">Add a new product listing for customers to see and buy</div>
+          </div>
+        </div>
+        <div class="upload-card">
+          <form id="upload-form" onsubmit="handleUpload(event)">
+            <div class="form-group">
+              <label class="form-label">Produce Name *</label>
+              <input type="text" class="form-input" id="up-name" placeholder="e.g. Fresh Callaloo Bunch" required />
+            </div>
+
+            <!-- IMAGE UPLOAD -->
+            <div class="form-group">
+              <label class="form-label">Product Image *</label>
+              <div id="image-upload-area"
+                style="border:2px dashed var(--green-pale);border-radius:var(--radius-sm);padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cream)"
+                onclick="document.getElementById('up-image-input').click()">
+                <div id="image-preview" style="display:none;margin-bottom:0.8rem">
+                  <img id="preview-img" src="" alt="Preview"
+                    style="max-height:160px;max-width:100%;border-radius:var(--radius-sm);object-fit:cover" />
+                </div>
+                <div id="image-placeholder">
+                  <div style="font-size:2.5rem;margin-bottom:0.5rem">📸</div>
+                  <div style="font-size:0.88rem;color:var(--text-mid);font-weight:600">Click to upload a photo</div>
+                  <div style="font-size:0.75rem;color:var(--text-light);margin-top:0.3rem">JPG, PNG, WEBP — max 5MB
+                  </div>
+                </div>
+              </div>
+              <input type="file" id="up-image-input" accept="image/*" style="display:none"
+                onchange="previewImage(event)" />
+              <small style="color:var(--text-light);font-size:0.75rem">If no image uploaded, a default icon will be used
+                instead</small>
+            </div>
+
+            <input type="hidden" id="up-emoji" value="🌿" />
+
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select class="form-input" id="up-category" required>
+                <option value="">Select category</option>
+                <option value="vegetables">Vegetables</option>
+                <option value="fruits">Fruits</option>
+                <option value="herbs">Herbs & Seasonings</option>
+                <option value="provisions">Provisions & Ground Food</option>
+                <option value="boxes">Produce Boxes</option>
+                <option value="gifts">Gift Items</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Description * <small style="color:var(--text-light)">(min 100
+                  words)</small></label>
+              <textarea class="form-input" id="up-description" rows="4"
+                placeholder="Describe your produce — where it's grown, how it's farmed, what's included, freshness guarantee, and why customers should buy it…"
+                required></textarea>
+              <small style="color:var(--text-light);font-size:0.78rem">Word count: <span
+                  id="word-count">0</span></small>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Price (J$) *</label>
+                <input type="number" class="form-input" id="up-price" placeholder="e.g. 800" min="1" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Price Unit</label>
+                <select class="form-input" id="up-unit">
+                  <option value="/week">/week</option>
+                  <option value="/bunch">/bunch</option>
+                  <option value="/kg">/kg</option>
+                  <option value="/lb">/lb</option>
+                  <option value="/pack">/pack</option>
+                  <option value="/box">/box</option>
+                  <option value="/dozen">/dozen</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Stock Available *</label>
+                <input type="number" class="form-input" id="up-stock" placeholder="e.g. 50" min="1" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Harvest Day</label>
+                <select class="form-input" id="up-harvest">
+                  <option>Monday</option>
+                  <option>Tuesday</option>
+                  <option>Wednesday</option>
+                  <option>Thursday</option>
+                  <option>Friday</option>
+                  <option>Saturday</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-upload">📸 Upload Listing</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="page-section" id="section-orders">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Incoming Orders 📋</div>
+            <div class="page-subtitle">Manage customer orders and update their status</div>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-icon">⏳</div>
+            <div class="stat-card-label">Pending</div>
+            <div class="stat-card-value" id="stat-pending">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">👨‍🍳</div>
+            <div class="stat-card-label">Preparing</div>
+            <div class="stat-card-value" id="stat-preparing">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">🚚</div>
+            <div class="stat-card-label">Dispatched</div>
+            <div class="stat-card-value" id="stat-dispatched">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">✅</div>
+            <div class="stat-card-label">Delivered</div>
+            <div class="stat-card-value" id="stat-delivered">0</div>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Items Ordered</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Update Status</th>
+              </tr>
             </thead>
-            <tbody id="earnings-tbody">
-            <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-light)">No orders yet — earnings will appear here once customers purchase your produce 🌾</td></tr>
-            </tbody>
+            <tbody id="orders-tbody"></tbody>
           </table>
         </div>
       </div>
-    </div>
 
-    <!-- PROFILE -->
-    <div class="page-section" id="section-profile">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Farm Profile 👤</div>
-          <div class="page-subtitle">This is what customers see about your farm</div>
+      <!-- EARNINGS -->
+      <div class="page-section" id="section-earnings">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Earnings 💰</div>
+            <div class="page-subtitle">Your sales breakdown and JaFresh platform commission</div>
+          </div>
+        </div>
+
+        <!-- Commission Explanation Banner -->
+        <div
+          style="background:linear-gradient(135deg,#1a3a2a,#2d6a4f);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
+          <div style="font-size:2.5rem">🤝</div>
+          <div>
+            <div style="color:#c9a84c;font-weight:800;font-size:1.1rem;margin-bottom:0.3rem">JaFresh Platform Commission
+              — 15%</div>
+            <div style="color:#a8d5b5;font-size:0.88rem;line-height:1.6">JaFresh Produce charges a 15% commission on all
+              sales to cover technology, delivery coordination, marketing, and customer support. You keep <strong
+                style="color:white">85% of every sale</strong>.</div>
+          </div>
+        </div>
+
+        <!-- Earnings Breakdown Cards -->
+        <div class="stats-grid" style="margin-bottom:2rem">
+          <div class="stat-card">
+            <div class="stat-card-icon">🛒</div>
+            <div class="stat-card-label">Gross Sales</div>
+            <div class="stat-card-value" id="earn-gross">J$0</div>
+            <div style="font-size:0.72rem;color:var(--text-light);margin-top:4px">Total customer payments</div>
+          </div>
+          <div class="stat-card" style="border:2px solid #fde2e2">
+            <div class="stat-card-icon">📊</div>
+            <div class="stat-card-label">JaFresh Commission (15%)</div>
+            <div class="stat-card-value" id="earn-commission" style="color:#c0392b">J$0</div>
+            <div style="font-size:0.72rem;color:var(--text-light);margin-top:4px">Platform fee deducted</div>
+          </div>
+          <div class="stat-card" style="border:2px solid #d8f3dc">
+            <div class="stat-card-icon">💵</div>
+            <div class="stat-card-label">Your Net Earnings (85%)</div>
+            <div class="stat-card-value" id="earn-net" style="color:var(--green-mid)">J$0</div>
+            <div style="font-size:0.72rem;color:var(--text-light);margin-top:4px">Paid to you within 3 days</div>
+          </div>
+        </div>
+
+        <!-- Visual Split Bar -->
+        <div
+          style="background:white;border-radius:var(--radius);padding:1.5rem;margin-bottom:2rem;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+          <div style="font-weight:700;color:var(--green-dark);margin-bottom:1rem">Revenue Split Per Sale</div>
+          <div style="border-radius:50px;overflow:hidden;height:36px;display:flex;font-size:0.8rem;font-weight:700">
+            <div id="earn-bar-farmer"
+              style="width:85%;background:#2d6a4f;display:flex;align-items:center;justify-content:center;color:white;transition:width 1s ease">
+              You — 85%
+            </div>
+            <div
+              style="width:15%;background:#c0392b;display:flex;align-items:center;justify-content:center;color:white">
+              JaFresh — 15%
+            </div>
+          </div>
+          <div
+            style="display:flex;justify-content:space-between;margin-top:0.8rem;font-size:0.8rem;color:var(--text-mid)">
+            <span>🟢 Your earnings — paid within 3 business days of delivery</span>
+            <span>🔴 JaFresh platform fee</span>
+          </div>
+        </div>
+
+        <!-- Per Order Breakdown Table -->
+        <div style="background:white;border-radius:var(--radius);padding:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+          <div style="font-weight:700;color:var(--green-dark);margin-bottom:1rem">Order Earnings Breakdown</div>
+          <div style="overflow-x:auto">
+            <table class="orders-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Date</th>
+                  <th>Gross Sale</th>
+                  <th>Commission (15%)</th>
+                  <th>Your Net (85%)</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="earnings-tbody">
+                <tr>
+                  <td colspan="6" style="text-align:center;padding:2rem;color:var(--text-light)">No orders yet —
+                    earnings will appear here once customers purchase your produce 🌾</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div class="profile-card">
-        <div class="farm-avatar" id="profile-avatar">🌾</div>
-        <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="profile-firstname" /></div>
-        <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="profile-lastname" /></div>
-        <div class="form-group"><label class="form-label">Farm Name</label><input class="form-input" id="profile-farmname" /></div>
-        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="profile-email" type="email" /></div>
-        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="profile-phone" /></div>
-        <div class="form-group"><label class="form-label">Parish</label>
-          <select class="form-input" id="profile-parish">
-            <option>Kingston</option><option>St. Andrew</option><option>St. Catherine</option>
-            <option>St. James</option><option>Manchester</option><option>Clarendon</option>
-            <option>St. Elizabeth</option><option>Westmoreland</option><option>Hanover</option>
-            <option>St. Ann</option><option>St. Mary</option><option>Portland</option>
-            <option>St. Thomas</option><option>Trelawny</option>
-          </select>
+
+      <!-- PROFILE -->
+      <div class="page-section" id="section-profile">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Farm Profile 👤</div>
+            <div class="page-subtitle">This is what customers see about your farm</div>
+          </div>
         </div>
-        <div class="form-group"><label class="form-label">About Your Farm</label><textarea class="form-input" id="profile-bio" rows="3" placeholder="Tell customers about your farming methods and story…"></textarea></div>
-        <button class="btn-save" onclick="saveProfile()">Save Profile ✅</button>
-      </div>
-    </div>
-
-  </main>
-</div>
-
-<!-- EDIT LISTING MODAL -->
-<div class="modal-overlay" id="edit-modal">
-  <div class="modal">
-    <button class="modal-close" onclick="document.getElementById('edit-modal').classList.remove('active')">✕</button>
-    <div class="modal-title">Edit Listing ✏️</div>
-    <input type="hidden" id="edit-id" />
-
-    <!-- Edit image upload -->
-    <div class="form-group">
-      <label class="form-label">Product Image</label>
-      <div id="edit-image-area" style="border:2px dashed var(--green-pale);border-radius:var(--radius-sm);padding:1rem;text-align:center;cursor:pointer;background:var(--cream)" onclick="document.getElementById('edit-image-input').click()">
-        <div id="edit-image-preview" style="margin-bottom:0.5rem">
-          <img id="edit-preview-img" src="" alt="Preview" style="max-height:120px;max-width:100%;border-radius:8px;object-fit:cover;display:none" />
+        <div class="profile-card">
+          <div class="farm-avatar" id="profile-avatar">🌾</div>
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input"
+              id="profile-firstname" /></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input"
+              id="profile-lastname" /></div>
+          <div class="form-group"><label class="form-label">Farm Name</label><input class="form-input"
+              id="profile-farmname" /></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="profile-email"
+              type="email" /></div>
+          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="profile-phone" />
+          </div>
+          <div class="form-group"><label class="form-label">Parish</label>
+            <select class="form-input" id="profile-parish">
+              <option>Kingston</option>
+              <option>St. Andrew</option>
+              <option>St. Catherine</option>
+              <option>St. James</option>
+              <option>Manchester</option>
+              <option>Clarendon</option>
+              <option>St. Elizabeth</option>
+              <option>Westmoreland</option>
+              <option>Hanover</option>
+              <option>St. Ann</option>
+              <option>St. Mary</option>
+              <option>Portland</option>
+              <option>St. Thomas</option>
+              <option>Trelawny</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">About Your Farm</label><textarea class="form-input"
+              id="profile-bio" rows="3" placeholder="Tell customers about your farming methods and story…"></textarea>
+          </div>
+          <button class="btn-save" onclick="saveProfile()">Save Profile ✅</button>
         </div>
-        <div id="edit-image-placeholder" style="font-size:0.85rem;color:var(--text-mid)">📸 Click to change image</div>
       </div>
-      <input type="file" id="edit-image-input" accept="image/*" style="display:none" onchange="previewEditImage(event)" />
-    </div>
 
-    <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="edit-name" /></div>
-    <div class="form-group"><label class="form-label">Price (J$)</label><input class="form-input" type="number" id="edit-price" /></div>
-    <div class="form-group">
-      <label class="form-label">Price Unit</label>
-      <select class="form-input" id="edit-unit">
-        <option value="/lb">/lb</option>
-        <option value="/bunch">/bunch</option>
-        <option value="/kg">/kg</option>
-        <option value="/pack">/pack</option>
-        <option value="/box">/box</option>
-        <option value="/dozen">/dozen</option>
-        <option value="/each">/each</option>
-      </select>
-    </div>
-    <div class="form-group"><label class="form-label">Stock Available</label><input class="form-input" type="number" id="edit-stock" /></div>
-    <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="edit-desc" rows="3"></textarea></div>
-    <button class="btn-upload" style="width:100%" onclick="saveEdit()">Save Changes ✅</button>
+    </main>
   </div>
-</div>
 
-<div class="toast" id="toast"></div>
+  <!-- EDIT LISTING MODAL -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal">
+      <button class="modal-close" onclick="document.getElementById('edit-modal').classList.remove('active')">✕</button>
+      <div class="modal-title">Edit Listing ✏️</div>
+      <input type="hidden" id="edit-id" />
 
-<script src="js/db.js"></script>
-<script>
-  const COMMISSION_RATE = 0.15; // JaFresh takes 15% on all sales
+      <!-- Edit image upload -->
+      <div class="form-group">
+        <label class="form-label">Product Image</label>
+        <div id="edit-image-area"
+          style="border:2px dashed var(--green-pale);border-radius:var(--radius-sm);padding:1rem;text-align:center;cursor:pointer;background:var(--cream)"
+          onclick="document.getElementById('edit-image-input').click()">
+          <div id="edit-image-preview" style="margin-bottom:0.5rem">
+            <img id="edit-preview-img" src="" alt="Preview"
+              style="max-height:120px;max-width:100%;border-radius:8px;object-fit:cover;display:none" />
+          </div>
+          <div id="edit-image-placeholder" style="font-size:0.85rem;color:var(--text-mid)">📸 Click to change image
+          </div>
+        </div>
+        <input type="file" id="edit-image-input" accept="image/*" style="display:none"
+          onchange="previewEditImage(event)" />
+      </div>
 
-  DB.initData();
+      <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="edit-name" /></div>
+      <div class="form-group"><label class="form-label">Price (J$)</label><input class="form-input" type="number"
+          id="edit-price" /></div>
+      <div class="form-group">
+        <label class="form-label">Price Unit</label>
+        <select class="form-input" id="edit-unit">
+          <option value="/lb">/lb</option>
+          <option value="/bunch">/bunch</option>
+          <option value="/kg">/kg</option>
+          <option value="/pack">/pack</option>
+          <option value="/box">/box</option>
+          <option value="/dozen">/dozen</option>
+          <option value="/each">/each</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Stock Available</label><input class="form-input" type="number"
+          id="edit-stock" /></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="edit-desc"
+          rows="3"></textarea></div>
+      <button class="btn-upload" style="width:100%" onclick="saveEdit()">Save Changes ✅</button>
+    </div>
+  </div>
 
-  // Auth guard
-  const user = DB.getCurrentUser();
-  if (!user || user.role !== 'farmer') window.location.href = window.location.href.replace(/[^/]*$/, 'login-farmer.html');
+  <div class="toast" id="toast"></div>
 
-  // Init UI
-  const farmerId = user?.farmer_id || 1;
-  document.getElementById('nav-farmname').textContent   = user?.farmName || `${user?.firstName}'s Farm`;
-  document.getElementById('farmer-firstname').textContent = user?.firstName || 'Farmer';
+  <script src="js/db.js"></script>
+  <script>
+    const COMMISSION_RATE = 0.15; // JaFresh takes 15% on all sales
 
-  // Profile fields
-  if (user) {
-    document.getElementById('profile-firstname').value = user.firstName || '';
-    document.getElementById('profile-lastname').value  = user.lastName  || '';
-    document.getElementById('profile-farmname').value  = user.farmName  || '';
-    document.getElementById('profile-email').value     = user.email     || '';
-    document.getElementById('profile-phone').value     = user.phone     || '';
-    document.getElementById('profile-bio').value       = user.bio       || '';
-  }
+    DB.initData();
 
-  renderAll();
+    // Auth guard
+    const user = DB.getCurrentUser();
+    if (!user || user.role !== 'farmer') window.location.href = window.location.href.replace(/[^/]*$/, 'login-farmer.html');
 
-  setupWordCount();
+    // Init UI
+    const farmerId = user?.farmer_id || 1;
+    document.getElementById('nav-farmname').textContent = user?.farmName || `${user?.firstName}'s Farm`;
+    document.getElementById('farmer-firstname').textContent = user?.firstName || 'Farmer';
 
-  function renderAll() {
-    renderListings();
-    renderOrders();
-    updateStats();
-    renderEarnings();
-  }
-
-  function renderEarnings() {
-    const orders = DB.getFarmerOrders(farmerId);
-    const tbody  = document.getElementById('earnings-tbody');
-
-    console.log('💰 renderEarnings called. farmerId:', farmerId);
-    console.log('💰 Orders found:', orders.length);
-    console.log('💰 Orders data:', orders);
-
-    if (!tbody) { console.warn('⚠️ earnings-tbody not found'); return; }
-
-    // Always recalculate from actual orders
-    const grossSales  = orders.reduce((s, o) => s + (o.farmerTotal || 0), 0);
-    const commission  = Math.round(grossSales * COMMISSION_RATE);
-    const netEarnings = grossSales - commission;
-
-    console.log('💰 Gross:', grossSales, '| Commission:', commission, '| Net:', netEarnings);
-
-    // Populate summary cards
-    document.getElementById('earn-gross').textContent = `J$${grossSales.toLocaleString()}`;
-    document.getElementById('earn-commission').textContent = `J$${commission.toLocaleString()}`;
-    document.getElementById('earn-net').textContent = `J$${netEarnings.toLocaleString()}`;
-
-    if (!orders.length) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-light)">No orders yet — earnings will appear here once customers purchase your produce 🌾</td></tr>`;
-      return;
+    // Profile fields
+    if (user) {
+      document.getElementById('profile-firstname').value = user.firstName || '';
+      document.getElementById('profile-lastname').value = user.lastName || '';
+      document.getElementById('profile-farmname').value = user.farmName || '';
+      document.getElementById('profile-email').value = user.email || '';
+      document.getElementById('profile-phone').value = user.phone || '';
+      document.getElementById('profile-bio').value = user.bio || '';
     }
 
-    // Populate per-order breakdown table
-    tbody.innerHTML = orders.map((o, i) => {
-      const gross     = o.farmerTotal || 0;
-      const orderComm = Math.round(gross * COMMISSION_RATE);
-      const net       = gross - orderComm;
-      const shade     = i % 2 === 0 ? 'background:#f9f9f9' : '';
-      const statusCss = (o.status || '').toLowerCase();
-      return `<tr style="${shade}">
+    renderAll();
+
+    setupWordCount();
+
+    function renderAll() {
+      renderListings();
+      renderOrders();
+      updateStats();
+      renderEarnings();
+    }
+
+    function renderEarnings() {
+      const orders = DB.getFarmerOrders(farmerId);
+      const tbody = document.getElementById('earnings-tbody');
+
+      console.log('💰 renderEarnings called. farmerId:', farmerId);
+      console.log('💰 Orders found:', orders.length);
+      console.log('💰 Orders data:', orders);
+
+      if (!tbody) { console.warn('⚠️ earnings-tbody not found'); return; }
+
+      // Always recalculate from actual orders
+      const grossSales = orders.reduce((s, o) => s + (o.farmerTotal || 0), 0);
+      const commission = Math.round(grossSales * COMMISSION_RATE);
+      const netEarnings = grossSales - commission;
+
+      console.log('💰 Gross:', grossSales, '| Commission:', commission, '| Net:', netEarnings);
+
+      // Populate summary cards
+      document.getElementById('earn-gross').textContent = `J$${grossSales.toLocaleString()}`;
+      document.getElementById('earn-commission').textContent = `J$${commission.toLocaleString()}`;
+      document.getElementById('earn-net').textContent = `J$${netEarnings.toLocaleString()}`;
+
+      if (!orders.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-light)">No orders yet — earnings will appear here once customers purchase your produce 🌾</td></tr>`;
+        return;
+      }
+
+      // Populate per-order breakdown table
+      tbody.innerHTML = orders.map((o, i) => {
+        const gross = o.farmerTotal || 0;
+        const orderComm = Math.round(gross * COMMISSION_RATE);
+        const net = gross - orderComm;
+        const shade = i % 2 === 0 ? 'background:#f9f9f9' : '';
+        const statusCss = (o.status || '').toLowerCase();
+        return `<tr style="${shade}">
         <td><strong>${o.id}</strong></td>
         <td>${o.date || '—'}</td>
         <td><strong>J$${gross.toLocaleString()}</strong></td>
@@ -572,44 +1175,44 @@
         <td style="color:var(--green-mid);font-weight:700">J$${net.toLocaleString()}</td>
         <td><span class="status-badge status-${statusCss}">${o.status || 'Processing'}</span></td>
       </tr>`;
-    }).join('');
-  }
-
-  // ── NAVIGATION ────────────────────────────────
-  function showSection(name, btn) {
-    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-    document.getElementById('section-' + name).classList.add('active');
-    if (btn) btn.classList.add('active');
-    // Refresh earnings whenever the section is opened
-    if (name === 'earnings') { updateStats(); renderEarnings(); }
-  }
-
-  // ── LISTINGS ──────────────────────────────────
-  function renderListings() {
-    const products = DB.getFarmerProducts(farmerId);
-    const grid     = document.getElementById('listings-grid');
-    const ovGrid   = document.getElementById('overview-listings-grid');
-
-    document.getElementById('stat-listings').textContent = products.length;
-
-    if (!products.length) {
-      const empty = `<div class="empty-state"><div class="empty-state-icon">🌱</div><p>No listings yet.</p><p style="margin-top:0.5rem;font-size:0.85rem">Upload your first produce to start selling!</p></div>`;
-      grid.innerHTML = empty; ovGrid.innerHTML = empty; return;
+      }).join('');
     }
 
-    const cards = products.map(p => `
+    // ── NAVIGATION ────────────────────────────────
+    function showSection(name, btn) {
+      document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+      document.getElementById('section-' + name).classList.add('active');
+      if (btn) btn.classList.add('active');
+      // Refresh earnings whenever the section is opened
+      if (name === 'earnings') { updateStats(); renderEarnings(); }
+    }
+
+    // ── LISTINGS ──────────────────────────────────
+    function renderListings() {
+      const products = DB.getFarmerProducts(farmerId);
+      const grid = document.getElementById('listings-grid');
+      const ovGrid = document.getElementById('overview-listings-grid');
+
+      document.getElementById('stat-listings').textContent = products.length;
+
+      if (!products.length) {
+        const empty = `<div class="empty-state"><div class="empty-state-icon">🌱</div><p>No listings yet.</p><p style="margin-top:0.5rem;font-size:0.85rem">Upload your first produce to start selling!</p></div>`;
+        grid.innerHTML = empty; ovGrid.innerHTML = empty; return;
+      }
+
+      const cards = products.map(p => `
       <div class="listing-card">
         <div class="listing-card-img" style="overflow:hidden">
           ${p.image
-            ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover" />`
-            : p.emoji}
+          ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover" />`
+          : p.emoji}
           <span class="listing-status-badge ${p.stock > 0 ? 'status-active' : 'status-outofstock'}">${p.stock > 0 ? 'Active' : 'Out of Stock'}</span>
         </div>
         <div class="listing-card-body">
           <div class="listing-card-name">${p.name}</div>
           <div class="listing-card-meta">Stock: ${p.stock} · ${p.category} · J$${p.price}${p.unit}</div>
-          <div style="font-size:0.8rem;color:var(--text-mid);line-height:1.4">${p.description.substring(0,70)}…</div>
+          <div style="font-size:0.8rem;color:var(--text-mid);line-height:1.4">${p.description.substring(0, 70)}…</div>
           <div class="listing-card-footer">
             <div class="listing-price">J$${p.price.toLocaleString()}${p.unit}</div>
             <div class="listing-actions">
@@ -620,221 +1223,221 @@
         </div>
       </div>`).join('');
 
-    grid.innerHTML   = cards;
-    ovGrid.innerHTML = cards;
-  }
+      grid.innerHTML = cards;
+      ovGrid.innerHTML = cards;
+    }
 
-  function updateStats() {
-    const products = DB.getFarmerProducts(farmerId);
-    const orders   = DB.getFarmerOrders(farmerId);
+    function updateStats() {
+      const products = DB.getFarmerProducts(farmerId);
+      const orders = DB.getFarmerOrders(farmerId);
 
-    // ── Orders This Week ──────────────────────────
-    const now       = new Date();
-    const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon...
-    const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - dayOfWeek);
-    startOfWeek.setHours(0, 0, 0, 0);
+      // ── Orders This Week ──────────────────────────
+      const now = new Date();
+      const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon...
+      const startOfWeek = new Date(now);
+      startOfWeek.setDate(now.getDate() - dayOfWeek);
+      startOfWeek.setHours(0, 0, 0, 0);
 
-    const ordersThisWeek = orders.filter(o => {
-      const orderDate = new Date(o.createdAt || o.date);
-      return orderDate >= startOfWeek;
-    });
-
-    // ── Earnings ──────────────────────────────────
-    const grossSales  = orders.reduce((s, o) => s + (o.farmerTotal || 0), 0);
-    const commission  = Math.round(grossSales * COMMISSION_RATE);
-    const netEarnings = grossSales - commission;
-
-    // Update overview stat cards
-    document.getElementById('stat-listings').textContent    = products.length;
-    document.getElementById('stat-earnings').textContent    = `J$${netEarnings.toLocaleString()}`;
-    document.getElementById('stat-orders-week').textContent = ordersThisWeek.length;
-
-    // Update earnings section cards if visible
-    const elGross = document.getElementById('earn-gross');
-    const elComm  = document.getElementById('earn-commission');
-    const elNet   = document.getElementById('earn-net');
-    if (elGross) elGross.textContent = `J$${grossSales.toLocaleString()}`;
-    if (elComm)  elComm.textContent  = `J$${commission.toLocaleString()}`;
-    if (elNet)   elNet.textContent   = `J$${netEarnings.toLocaleString()}`;
-  }
-
-  // ── IMAGE HANDLING ────────────────────────────
-  let _uploadedImageBase64 = null;
-  let _editImageBase64     = null;
-
-  function previewImage(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { showToast('⚠️ Image must be under 5MB'); return; }
-    const reader = new FileReader();
-    reader.onload = e => {
-      _uploadedImageBase64 = e.target.result;
-      document.getElementById('preview-img').src = e.target.result;
-      document.getElementById('image-preview').style.display = 'block';
-      document.getElementById('image-placeholder').style.display = 'none';
-      document.getElementById('image-upload-area').style.borderColor = 'var(--green-mid)';
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function previewEditImage(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { showToast('⚠️ Image must be under 5MB'); return; }
-    const reader = new FileReader();
-    reader.onload = e => {
-      _editImageBase64 = e.target.result;
-      const img = document.getElementById('edit-preview-img');
-      img.src = e.target.result;
-      img.style.display = 'block';
-      document.getElementById('edit-image-placeholder').textContent = '✅ New image selected';
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // ── UPLOAD ────────────────────────────────────
-  function handleUpload(e) {
-    e.preventDefault();
-    const name  = document.getElementById('up-name').value.trim();
-    const desc  = document.getElementById('up-description').value.trim();
-    const price = parseInt(document.getElementById('up-price').value);
-    const stock = parseInt(document.getElementById('up-stock').value);
-    const cat   = document.getElementById('up-category').value;
-    const unit  = document.getElementById('up-unit').value;
-    const emoji = document.getElementById('up-emoji').value;
-
-    if (!name)         { showToast('⚠️ Please enter a produce name'); return; }
-    if (!cat)          { showToast('⚠️ Please select a category'); return; }
-    if (!desc)         { showToast('⚠️ Please add a description'); return; }
-    if (!price || price < 1) { showToast('⚠️ Please enter a valid price'); return; }
-    if (!stock || stock < 1) { showToast('⚠️ Please enter stock quantity'); return; }
-
-    const wordCount = desc.split(/\s+/).filter(Boolean).length;
-    if (wordCount < 20) { showToast('⚠️ Description must be at least 20 words'); return; }
-
-    const btn = document.querySelector('#upload-form .btn-upload');
-    btn.textContent = 'Uploading…'; btn.disabled = true;
-
-    setTimeout(() => {
-      DB.addProduct({
-        name, emoji, category: cat, description: desc,
-        price, unit, stock,
-        farmer_id: farmerId,
-        image: _uploadedImageBase64 || null,
-        tag: 'New',
+      const ordersThisWeek = orders.filter(o => {
+        const orderDate = new Date(o.createdAt || o.date);
+        return orderDate >= startOfWeek;
       });
 
-      // Reset form
-      document.getElementById('upload-form').reset();
-      _uploadedImageBase64 = null;
-      document.getElementById('image-preview').style.display = 'none';
-      document.getElementById('image-placeholder').style.display = 'block';
-      document.getElementById('image-upload-area').style.borderColor = 'var(--green-pale)';
-      document.getElementById('up-emoji').value = '🌿';
+      // ── Earnings ──────────────────────────────────
+      const grossSales = orders.reduce((s, o) => s + (o.farmerTotal || 0), 0);
+      const commission = Math.round(grossSales * COMMISSION_RATE);
+      const netEarnings = grossSales - commission;
+
+      // Update overview stat cards
+      document.getElementById('stat-listings').textContent = products.length;
+      document.getElementById('stat-earnings').textContent = `J$${netEarnings.toLocaleString()}`;
+      document.getElementById('stat-orders-week').textContent = ordersThisWeek.length;
+
+      // Update earnings section cards if visible
+      const elGross = document.getElementById('earn-gross');
+      const elComm = document.getElementById('earn-commission');
+      const elNet = document.getElementById('earn-net');
+      if (elGross) elGross.textContent = `J$${grossSales.toLocaleString()}`;
+      if (elComm) elComm.textContent = `J$${commission.toLocaleString()}`;
+      if (elNet) elNet.textContent = `J$${netEarnings.toLocaleString()}`;
+    }
+
+    // ── IMAGE HANDLING ────────────────────────────
+    let _uploadedImageBase64 = null;
+    let _editImageBase64 = null;
+
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { showToast('⚠️ Image must be under 5MB'); return; }
+      const reader = new FileReader();
+      reader.onload = e => {
+        _uploadedImageBase64 = e.target.result;
+        document.getElementById('preview-img').src = e.target.result;
+        document.getElementById('image-preview').style.display = 'block';
+        document.getElementById('image-placeholder').style.display = 'none';
+        document.getElementById('image-upload-area').style.borderColor = 'var(--green-mid)';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function previewEditImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { showToast('⚠️ Image must be under 5MB'); return; }
+      const reader = new FileReader();
+      reader.onload = e => {
+        _editImageBase64 = e.target.result;
+        const img = document.getElementById('edit-preview-img');
+        img.src = e.target.result;
+        img.style.display = 'block';
+        document.getElementById('edit-image-placeholder').textContent = '✅ New image selected';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ── UPLOAD ────────────────────────────────────
+    function handleUpload(e) {
+      e.preventDefault();
+      const name = document.getElementById('up-name').value.trim();
+      const desc = document.getElementById('up-description').value.trim();
+      const price = parseInt(document.getElementById('up-price').value);
+      const stock = parseInt(document.getElementById('up-stock').value);
+      const cat = document.getElementById('up-category').value;
+      const unit = document.getElementById('up-unit').value;
+      const emoji = document.getElementById('up-emoji').value;
+
+      if (!name) { showToast('⚠️ Please enter a produce name'); return; }
+      if (!cat) { showToast('⚠️ Please select a category'); return; }
+      if (!desc) { showToast('⚠️ Please add a description'); return; }
+      if (!price || price < 1) { showToast('⚠️ Please enter a valid price'); return; }
+      if (!stock || stock < 1) { showToast('⚠️ Please enter stock quantity'); return; }
+
+      const wordCount = desc.split(/\s+/).filter(Boolean).length;
+      if (wordCount < 20) { showToast('⚠️ Description must be at least 20 words'); return; }
+
+      const btn = document.querySelector('#upload-form .btn-upload');
+      btn.textContent = 'Uploading…'; btn.disabled = true;
+
+      setTimeout(() => {
+        DB.addProduct({
+          name, emoji, category: cat, description: desc,
+          price, unit, stock,
+          farmer_id: farmerId,
+          image: _uploadedImageBase64 || null,
+          tag: 'New',
+        });
+
+        // Reset form
+        document.getElementById('upload-form').reset();
+        _uploadedImageBase64 = null;
+        document.getElementById('image-preview').style.display = 'none';
+        document.getElementById('image-placeholder').style.display = 'block';
+        document.getElementById('image-upload-area').style.borderColor = 'var(--green-pale)';
+        document.getElementById('up-emoji').value = '🌿';
 
 
-      document.getElementById('word-count').textContent = '0';
-      btn.textContent = '📸 Upload Listing'; btn.disabled = false;
+        document.getElementById('word-count').textContent = '0';
+        btn.textContent = '📸 Upload Listing'; btn.disabled = false;
 
+        renderListings();
+        updateStats();
+        showToast('✅ Product listed! Customers can now see it.');
+        showSection('listings', document.querySelectorAll('.sidebar-link')[1]);
+      }, 500);
+    }
+
+    // ── EDIT ──────────────────────────────────────
+    function openEdit(id) {
+      const p = DB.getProduct(id);
+      if (!p) return;
+      _editImageBase64 = null;
+
+      document.getElementById('edit-id').value = id;
+      document.getElementById('edit-name').value = p.name;
+      document.getElementById('edit-price').value = p.price;
+      document.getElementById('edit-unit').value = p.unit;
+      document.getElementById('edit-stock').value = p.stock;
+      document.getElementById('edit-desc').value = p.description;
+
+      // Show existing image if any
+      const img = document.getElementById('edit-preview-img');
+      if (p.image) {
+        img.src = p.image;
+        img.style.display = 'block';
+        document.getElementById('edit-image-placeholder').textContent = '📸 Click to change image';
+      } else {
+        img.style.display = 'none';
+        document.getElementById('edit-image-placeholder').textContent = '📸 Click to add image';
+      }
+
+      document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function saveEdit() {
+      const id = parseInt(document.getElementById('edit-id').value);
+      const updates = {
+        name: document.getElementById('edit-name').value,
+        price: parseInt(document.getElementById('edit-price').value),
+        unit: document.getElementById('edit-unit').value,
+        stock: parseInt(document.getElementById('edit-stock').value),
+        description: document.getElementById('edit-desc').value,
+      };
+      // Only update image if a new one was uploaded
+      if (_editImageBase64) updates.image = _editImageBase64;
+
+      DB.updateProduct(id, updates);
+      document.getElementById('edit-modal').classList.remove('active');
+      _editImageBase64 = null;
+      renderListings();
+      showToast('✅ Listing updated! Customers will see the changes.');
+    }
+
+    function deleteListing(id) {
+      if (!confirm('Delete this listing? Customers will no longer be able to see or buy this product.')) return;
+      DB.deleteProduct(id);
       renderListings();
       updateStats();
-      showToast('✅ Product listed! Customers can now see it.');
-      showSection('listings', document.querySelectorAll('.sidebar-link')[1]);
-    }, 500);
-  }
-
-  // ── EDIT ──────────────────────────────────────
-  function openEdit(id) {
-    const p = DB.getProduct(id);
-    if (!p) return;
-    _editImageBase64 = null;
-
-    document.getElementById('edit-id').value    = id;
-    document.getElementById('edit-name').value  = p.name;
-    document.getElementById('edit-price').value = p.price;
-    document.getElementById('edit-unit').value  = p.unit;
-    document.getElementById('edit-stock').value = p.stock;
-    document.getElementById('edit-desc').value  = p.description;
-
-    // Show existing image if any
-    const img = document.getElementById('edit-preview-img');
-    if (p.image) {
-      img.src = p.image;
-      img.style.display = 'block';
-      document.getElementById('edit-image-placeholder').textContent = '📸 Click to change image';
-    } else {
-      img.style.display = 'none';
-      document.getElementById('edit-image-placeholder').textContent = '📸 Click to add image';
+      showToast('🗑 Listing removed from customer shop');
     }
 
-    document.getElementById('edit-modal').classList.add('active');
-  }
+    // ── ORDERS ────────────────────────────────────
+    function renderOrders() {
+      const orders = DB.getFarmerOrders(farmerId);
 
-  function saveEdit() {
-    const id = parseInt(document.getElementById('edit-id').value);
-    const updates = {
-      name:        document.getElementById('edit-name').value,
-      price:       parseInt(document.getElementById('edit-price').value),
-      unit:        document.getElementById('edit-unit').value,
-      stock:       parseInt(document.getElementById('edit-stock').value),
-      description: document.getElementById('edit-desc').value,
-    };
-    // Only update image if a new one was uploaded
-    if (_editImageBase64) updates.image = _editImageBase64;
+      // Update stat counters
+      document.getElementById('stat-pending').textContent = orders.filter(o => o.status === 'Processing').length;
+      document.getElementById('stat-preparing').textContent = orders.filter(o => o.status === 'Preparing').length;
+      document.getElementById('stat-dispatched').textContent = orders.filter(o => o.status === 'Dispatched').length;
+      document.getElementById('stat-delivered').textContent = orders.filter(o => o.status === 'Delivered').length;
 
-    DB.updateProduct(id, updates);
-    document.getElementById('edit-modal').classList.remove('active');
-    _editImageBase64 = null;
-    renderListings();
-    showToast('✅ Listing updated! Customers will see the changes.');
-  }
+      // Update earnings
+      const revenue = orders.reduce((s, o) => s + (o.farmerTotal || 0), 0);
+      const statEarnings = document.getElementById('stat-earnings');
+      if (statEarnings) statEarnings.textContent = `J$${revenue.toLocaleString()}`;
 
-  function deleteListing(id) {
-    if (!confirm('Delete this listing? Customers will no longer be able to see or buy this product.')) return;
-    DB.deleteProduct(id);
-    renderListings();
-    updateStats();
-    showToast('🗑 Listing removed from customer shop');
-  }
-
-  // ── ORDERS ────────────────────────────────────
-  function renderOrders() {
-    const orders = DB.getFarmerOrders(farmerId);
-
-    // Update stat counters
-    document.getElementById('stat-pending').textContent    = orders.filter(o => o.status === 'Processing').length;
-    document.getElementById('stat-preparing').textContent  = orders.filter(o => o.status === 'Preparing').length;
-    document.getElementById('stat-dispatched').textContent = orders.filter(o => o.status === 'Dispatched').length;
-    document.getElementById('stat-delivered').textContent  = orders.filter(o => o.status === 'Delivered').length;
-
-    // Update earnings
-    const revenue = orders.reduce((s, o) => s + (o.farmerTotal || 0), 0);
-    const statEarnings = document.getElementById('stat-earnings');
-    if (statEarnings) statEarnings.textContent = `J$${revenue.toLocaleString()}`;
-
-    if (!orders.length) {
-      const empty = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-light)">
+      if (!orders.length) {
+        const empty = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-light)">
         No orders yet. Once customers buy your produce, orders appear here! 🌾
       </td></tr>`;
-      document.getElementById('orders-tbody').innerHTML          = empty;
-      document.getElementById('overview-orders-tbody').innerHTML = empty;
-      return;
-    }
+        document.getElementById('orders-tbody').innerHTML = empty;
+        document.getElementById('overview-orders-tbody').innerHTML = empty;
+        return;
+      }
 
-    const statusOptions = ['Processing', 'Preparing', 'Dispatched', 'Delivered'];
+      const statusOptions = ['Processing', 'Preparing', 'Dispatched', 'Delivered'];
 
-    const row = o => {
-      const itemList   = o.farmerItems?.map(i => `${i.name} x${i.qty}`).join(', ') || 'Produce';
-      const shortItems = itemList.length > 30 ? itemList.substring(0, 30) + '…' : itemList;
-      const statusClass = o.status.toLowerCase();
+      const row = o => {
+        const itemList = o.farmerItems?.map(i => `${i.name} x${i.qty}`).join(', ') || 'Produce';
+        const shortItems = itemList.length > 30 ? itemList.substring(0, 30) + '…' : itemList;
+        const statusClass = o.status.toLowerCase();
 
-      return `<tr id="order-row-${o.id}">
+        return `<tr id="order-row-${o.id}">
         <td><strong>${o.id}</strong></td>
         <td>${o.date}</td>
         <td>${o.customerName || 'Customer'}</td>
         <td title="${itemList}">${shortItems}</td>
-        <td>J$${(o.farmerTotal || o.total || 0).toLocaleString()} <span style="font-size:0.7rem;color:var(--text-light)">(net: J$${Math.round((o.farmerTotal||0)*0.85).toLocaleString()})</span></td>
+        <td>J$${(o.farmerTotal || o.total || 0).toLocaleString()} <span style="font-size:0.7rem;color:var(--text-light)">(net: J$${Math.round((o.farmerTotal || 0) * 0.85).toLocaleString()})</span></td>
         <td><span class="status-badge status-${statusClass}" id="badge-${o.id}">${o.status}</span></td>
         <td>
           ${o.status === 'Delivered' ? '<span style="color:var(--green-mid);font-size:0.8rem;font-weight:700">✅ Completed</span>' : `
@@ -846,113 +1449,114 @@
           </div>`}
         </td>
       </tr>`;
-    };
+      };
 
-    const html = orders.map(row).join('');
-    document.getElementById('orders-tbody').innerHTML          = html;
-    document.getElementById('overview-orders-tbody').innerHTML = orders.slice(0,3).map(row).join('');
-  }
-
-  function updateOrderStatus(orderId) {
-    const select    = document.getElementById(`select-${orderId}`);
-    const newStatus = select.value;
-
-    // Update order status in DB
-    DB.updateOrderStatus(orderId, newStatus, farmerId);
-
-    // If dispatched or delivered, reduce stock
-    if (newStatus === 'Dispatched' || newStatus === 'Delivered') {
-      DB.reduceStockForOrder(orderId, farmerId);
+      const html = orders.map(row).join('');
+      document.getElementById('orders-tbody').innerHTML = html;
+      document.getElementById('overview-orders-tbody').innerHTML = orders.slice(0, 3).map(row).join('');
     }
 
-    // Update badge color immediately
-    const badge = document.getElementById(`badge-${orderId}`);
-    if (badge) {
-      badge.textContent  = newStatus;
-      badge.className    = `status-badge status-${newStatus.toLowerCase()}`;
+    function updateOrderStatus(orderId) {
+      const select = document.getElementById(`select-${orderId}`);
+      const newStatus = select.value;
+
+      // Update order status in DB
+      DB.updateOrderStatus(orderId, newStatus, farmerId);
+
+      // If dispatched or delivered, reduce stock
+      if (newStatus === 'Dispatched' || newStatus === 'Delivered') {
+        DB.reduceStockForOrder(orderId, farmerId);
+      }
+
+      // Update badge color immediately
+      const badge = document.getElementById(`badge-${orderId}`);
+      if (badge) {
+        badge.textContent = newStatus;
+        badge.className = `status-badge status-${newStatus.toLowerCase()}`;
+      }
+
+      showToast(`✅ Order ${orderId} updated to "${newStatus}"`);
+
+      // Re-render orders and listings to reflect stock changes
+      setTimeout(() => {
+        renderOrders();
+        renderListings();
+        updateStats();
+      }, 300);
     }
 
-    showToast(`✅ Order ${orderId} updated to "${newStatus}"`);
+    // ── WORD COUNT ────────────────────────────────
+    function setupWordCount() {
+      document.getElementById('up-description').addEventListener('input', function () {
+        const count = this.value.trim() ? this.value.trim().split(/\s+/).length : 0;
+        const el = document.getElementById('word-count');
+        el.textContent = count;
+        el.style.color = count >= 20 ? 'var(--green-mid)' : 'var(--text-light)';
+      });
+    }
 
-    // Re-render orders and listings to reflect stock changes
-    setTimeout(() => {
-      renderOrders();
-      renderListings();
-      updateStats();
-    }, 300);
-  }
+    // ── PROFILE ───────────────────────────────────
+    function saveProfile() { showToast('✅ Farm profile saved!'); }
 
-  // ── WORD COUNT ────────────────────────────────
-  function setupWordCount() {
-    document.getElementById('up-description').addEventListener('input', function() {
-      const count = this.value.trim() ? this.value.trim().split(/\s+/).length : 0;
-      const el = document.getElementById('word-count');
-      el.textContent = count;
-      el.style.color = count >= 20 ? 'var(--green-mid)' : 'var(--text-light)';
+    // ── UTILS ─────────────────────────────────────
+    // ── LIVE ORDER REFRESH ────────────────────────
+    // When a customer places an order, refresh farmer dashboard automatically
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'jf_orders') {
+        renderOrders();
+        updateStats();
+        renderEarnings();
+        showToast('🔔 New order received!');
+      }
     });
-  }
 
-  // ── PROFILE ───────────────────────────────────
-  function saveProfile() { showToast('✅ Farm profile saved!'); }
+    function handleLogout() { DB.logout(); window.location.href = window.location.href.replace(/[^/]*$/, 'login-farmer.html'); }
 
-  // ── UTILS ─────────────────────────────────────
-  // ── LIVE ORDER REFRESH ────────────────────────
-  // When a customer places an order, refresh farmer dashboard automatically
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'jf_orders') {
-      renderOrders();
-      updateStats();
-      renderEarnings();
-      showToast('🔔 New order received!');
-    }
-  });
+    // ── AUTO LOGOUT AFTER 30 MINS IDLE ────────────
+    (function autoLogout() {
+      const TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+      const WARNING_MS = 60 * 1000;      // warn 1 minute before
+      let logoutTimer, warningTimer, warningToast;
 
-  function handleLogout() { DB.logout(); window.location.href = window.location.href.replace(/[^/]*$/, 'login-farmer.html'); }
+      function resetTimers() {
+        clearTimeout(logoutTimer);
+        clearTimeout(warningTimer);
 
-  // ── AUTO LOGOUT AFTER 30 MINS IDLE ────────────
-  (function autoLogout() {
-    const TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
-    const WARNING_MS = 60 * 1000;      // warn 1 minute before
-    let logoutTimer, warningTimer, warningToast;
+        if (warningToast) { warningToast.remove(); warningToast = null; }
 
-    function resetTimers() {
-      clearTimeout(logoutTimer);
-      clearTimeout(warningTimer);
-
-      if (warningToast) { warningToast.remove(); warningToast = null; }
-
-      warningTimer = setTimeout(() => {
-        warningToast = document.createElement('div');
-        warningToast.style.cssText = `
+        warningTimer = setTimeout(() => {
+          warningToast = document.createElement('div');
+          warningToast.style.cssText = `
           position:fixed; bottom:90px; right:24px; z-index:9999;
           background:#856404; color:white; padding:1rem 1.4rem;
           border-radius:12px; font-size:0.88rem; font-weight:600;
           box-shadow:0 4px 20px rgba(0,0,0,0.2); max-width:280px;
           line-height:1.5;
         `;
-        warningToast.innerHTML = '⏳ You\'ll be logged out in 1 minute due to inactivity.<br><span style="font-size:0.8rem;opacity:0.85">Move your mouse or tap to stay logged in.</span>';
-        document.body.appendChild(warningToast);
-      }, TIMEOUT_MS - WARNING_MS);
+          warningToast.innerHTML = '⏳ You\'ll be logged out in 1 minute due to inactivity.<br><span style="font-size:0.8rem;opacity:0.85">Move your mouse or tap to stay logged in.</span>';
+          document.body.appendChild(warningToast);
+        }, TIMEOUT_MS - WARNING_MS);
 
-      logoutTimer = setTimeout(() => {
-        DB.logout();
-        alert('You have been logged out due to 30 minutes of inactivity.');
-        window.location.href = window.location.href.replace(/[^/]*$/, 'login-farmer.html');
-      }, TIMEOUT_MS);
+        logoutTimer = setTimeout(() => {
+          DB.logout();
+          alert('You have been logged out due to 30 minutes of inactivity.');
+          window.location.href = window.location.href.replace(/[^/]*$/, 'login-farmer.html');
+        }, TIMEOUT_MS);
+      }
+
+      ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'].forEach(event => {
+        document.addEventListener(event, resetTimers, { passive: true });
+      });
+
+      resetTimers();
+    })();
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
     }
-
-    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'].forEach(event => {
-      document.addEventListener(event, resetTimers, { passive: true });
-    });
-
-    resetTimers();
-  })();
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-  }
-</script>
+  </script>
 </body>
+
 </html>
